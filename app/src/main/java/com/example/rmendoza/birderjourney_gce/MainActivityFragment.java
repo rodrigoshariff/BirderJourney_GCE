@@ -23,6 +23,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.example.DBHelper_Java;
 import com.example.rmendoza.myapplication.gce_admin.myApi.MyApi;
@@ -38,8 +39,11 @@ import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 public class MainActivityFragment extends Fragment {
 
     String searchText = "";
-    ArrayList GCE_Search = new ArrayList();
+    List GCE_Search = new ArrayList();
     String GCE_String = null;
+    private static MyApi myApiService1 = null;
+    ListView listView1 ;
+
 
     public MainActivityFragment() {
     }
@@ -54,51 +58,41 @@ public class MainActivityFragment extends Fragment {
 
 
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        final ListView listView = (ListView) rootView.findViewById(R.id.listView1);
+        listView1 = (ListView) rootView.findViewById(R.id.listView1);
         EditText editText = (EditText) rootView.findViewById(R.id.searchText);
 
         if (searchText.length() > 0) {
             editText.setText(searchText);
-        };
+        }
+        ;
 
 
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView editText, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    listView.setAdapter(null);
+                    GCE_Search.clear();
+                    listView1.setAdapter(null);
                     if (editText.getText() != "" && editText.getText() != null && editText.length() > 0) {
 
                         searchText = editText.getText().toString();
                         editText.clearFocus();
 
-                        //ArrayList array_list = mydb.getAllBirds(searchText);
-                        //try {
-//                            mydb.CreateDB();
-//                            ArrayList array_list = mydb.getSearchedBirds(searchText);
-
-                            EndpointsAsyncTask searchDB = new EndpointsAsyncTask();
-                            searchDB.execute(searchText);
+                        new EndpointsAsyncTask1().execute(new Pair<Context, String>(getActivity(), searchText));
 
 
-
-//                            String testresults = GCE_String;
+//                        EndpointsAsyncTask searchDB = new EndpointsAsyncTask();
+//                        searchDB.execute(searchText);
+//                        String testresults = "Great Blue Heron (Ardea herodias), Little Blue Heron (Egretta caerulea)";
+//                        GCE_Search.addAll(Arrays.asList(GCE_String.split(", ")));
 //
-//                            GCE_Search = (ArrayList) Arrays.asList(GCE_String.split(","));
-//
-//                            ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, GCE_Search);
-//
-//                            listView.setAdapter(arrayAdapter);
+//                        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, GCE_Search);
+//                        listView.setAdapter(arrayAdapter);
 
-                            //hide keyboard
-//                            InputMethodManager in = (InputMethodManager) getActivity().
-//                                    getSystemService(Context.INPUT_METHOD_SERVICE);
-//                            in.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-
-                        //}
-                        //catch(Exception e){
-                         //   e.getMessage();
-                        //};
+                        //hide keyboard
+                            InputMethodManager in = (InputMethodManager) getActivity().
+                                    getSystemService(Context.INPUT_METHOD_SERVICE);
+                            in.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 
                         return true;
                     } else {
@@ -108,8 +102,10 @@ public class MainActivityFragment extends Fragment {
                         in.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 
                         Toast.makeText(getActivity(), "Please enter part of the name of the bird", Toast.LENGTH_SHORT).show();
-                        listView.invalidateViews();
+                        listView1.invalidateViews();
                     }
+
+
                 }
                 return false;
             }
@@ -120,52 +116,46 @@ public class MainActivityFragment extends Fragment {
     }
 
 
-    private class EndpointsAsyncTask extends AsyncTask<String, Void, String> {
-        private MyApi myApiService = null;
-        //private Context context;
+    private void refreshListView() {
+
+        GCE_Search.addAll(Arrays.asList(GCE_String.split(", ")));
+        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, GCE_Search);
+        listView1.setAdapter(arrayAdapter);
+
+    }
+
+
+    public class EndpointsAsyncTask1 extends AsyncTask<Pair<Context, String>, Void, String> {
+
+        private Context context;
 
         @Override
-        protected String doInBackground(String... params) {
-            if(myApiService == null) {  // Only do this once
+        protected String doInBackground(Pair<Context, String>... params) {
+            if (myApiService1 == null) {  // Only do this once
 
-/*                MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
-                        new AndroidJsonFactory(), null)
-                        // options for running against local devappserver
-                        // - 10.0.2.2 is localhost's IP address in Android emulator
-                        // - turn off compression when running against local devappserver
-                        //.setRootUrl("http://10.0.2.2:8080/_ah/api/")
-                        .setRootUrl("http://192.168.1.209:8080/_ah/api/")
-                        .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
-                            @Override
-                            public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
-                                abstractGoogleClientRequest.setDisableGZipContent(true);
-                            }
-                            });*/
-
-
-                MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
-                        new AndroidJsonFactory(), null)
+                MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                         .setRootUrl("https://birderjourney.appspot.com/_ah/api/");
 
-                myApiService = builder.build();
+                myApiService1 = builder.build();
             }
 
-            //context = params[0].first;
-            String searchstring = params[0];
+            context = params[0].first;
+            String name = params[0].second;
 
             try {
-                String ApiResults = myApiService.searchDB(searchstring).execute().getData();
-                return ApiResults;
-            } catch (Exception e) {
-                Log.e("LOG_TAG", "Error ==========>: " + e.getMessage(), e);
+                return myApiService1.searchDB(name).execute().getData();
+            } catch (IOException e) {
                 return e.getMessage();
             }
         }
 
         @Override
-        protected void onPostExecute(String ApiResults) {
-            GCE_String = ApiResults;
+        protected void onPostExecute(String result) {
+//            Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            GCE_String = result;
+            refreshListView();
         }
     }
+
 
 }
