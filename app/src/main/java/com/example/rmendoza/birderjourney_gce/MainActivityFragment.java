@@ -143,7 +143,7 @@ public class MainActivityFragment extends Fragment {
             String name = params[0].second;
 
             try {
-                return myApiService1.searchDB(name).execute().getData();
+                return myApiService1.searchDB(name).execute().getData().toString();
             } catch (IOException e) {
                 return e.getMessage();
             }

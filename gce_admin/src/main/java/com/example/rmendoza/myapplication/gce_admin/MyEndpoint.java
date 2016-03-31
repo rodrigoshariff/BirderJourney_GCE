@@ -39,7 +39,8 @@ public class MyEndpoint {
 
         try {
             ArrayList results = mydb.getSearchedBirds(searchstring);
-            response.setData(results.toString());
+            //response.setData(results.toString());
+            response.setData(results);
         }
         catch (Exception e) {
             e.getMessage();
