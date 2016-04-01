@@ -1006,18 +1006,19 @@ public class SimpleArray {
 
     public ArrayList getSearchedBirds(String searchstring) {
 
-        //ArrayList<BirdArrayItem> BirdItemArray = new ArrayList<>();
+        ArrayList<BirdArrayItem> BirdItemArray = new ArrayList<>();
 
-        ArrayList<String> array_list = new ArrayList<String>();
+        //ArrayList<String> array_list = new ArrayList<String>();
 
         for (int i = 0; i < birds.length; i++) {
             if (birds[i][1].toLowerCase().contains(searchstring.toLowerCase())) {
-                array_list.add(birds[i][1]);
-                //BirdArrayItem birdItem = new BirdArrayItem(birds[i][0],birds[i][1],birds[i][2],birds[i][3],birds[i][4],birds[i][5],"","","","");
-                //BirdItemArray.add(birdItem);
+                //array_list.add(birds[i][1]);
+                BirdArrayItem birdItem = new BirdArrayItem(birds[i][0],birds[i][1],birds[i][1],birds[i][1],birds[i][2],birds[i][3],"TBD","TBD","TBD","TBD");
+                BirdItemArray.add(birdItem);
             }
         }
-        return array_list;
+        //return array_list;
+            return BirdItemArray;
     }
 
 }

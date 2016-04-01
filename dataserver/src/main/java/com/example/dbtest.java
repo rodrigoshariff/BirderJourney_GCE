@@ -43,8 +43,8 @@ public class dbtest {
 
         try {
             //boolean isarrayempty = mydb.isArrayEmpty();
-            ArrayList results = mydb.getSearchedBirds("black");
-            System.out.println("name = " + results);
+            ArrayList<BirdArrayItem> results = mydb.getSearchedBirds("blue heron");
+            System.out.println("name = " + results.get(0).getFullName());
         }
 
         catch (Exception e) {

@@ -1,5 +1,7 @@
 package com.example.rmendoza.myapplication.gce_admin;
 
+import com.example.BirdArrayItem;
+
 import java.util.ArrayList;
 
 /** The object model for the data we are sending through endpoints */
@@ -15,13 +17,13 @@ public class MyBean {
 //        myData = data;
 //    }
 
-    private ArrayList<String> myData;
+    private ArrayList<BirdArrayItem> myData;
 
-    public ArrayList<String> getData() {
+    public ArrayList<BirdArrayItem> getData() {
         return myData;
     }
 
-    public void setData(ArrayList<String> data) {
+    public void setData(ArrayList<BirdArrayItem> data) {
         myData = data;
     }
 

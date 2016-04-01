@@ -33,6 +33,8 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 
+import org.json.JSONArray;
+
 
 /**
  * A placeholder fragment containing a simple view.
@@ -40,7 +42,7 @@ import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 public class MainActivityFragment extends Fragment {
 
     String searchText = "";
-    List<BirdArrayItem> GCE_Search = new ArrayList();
+    List GCE_Search = new ArrayList();
     String GCE_String = null;
     private static MyApi myApiService1 = null;
     ListView listView1 ;
@@ -120,7 +122,7 @@ public class MainActivityFragment extends Fragment {
     private void refreshListView() {
 
         //GCE_Search.addAll(Arrays.asList(GCE_String.split(", ")));
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, GCE_Search.indexOf(1));
+        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, GCE_Search);
         listView1.setAdapter(arrayAdapter);
 
     }
@@ -144,7 +146,7 @@ public class MainActivityFragment extends Fragment {
             String name = params[0].second;
 
             try {
-                return myApiService1.searchDB(name).execute().getData(); //.toString();
+                return myApiService1.searchDB(name).execute().getData();
             } catch (IOException e) {
                 //return e.getMessage();
                 return null;
@@ -156,6 +158,9 @@ public class MainActivityFragment extends Fragment {
 //            Toast.makeText(context, result, Toast.LENGTH_LONG).show();
             //GCE_String = result;
             GCE_Search = result;
+            JSONArray BirdList = new JSONArray(GCE_Search);
+//            BirdArrayItem birdItem = new BirdArrayItem();
+//            birdItem = (BirdArrayItem)GCE_Search.get(0);
             refreshListView();
         }
     }
