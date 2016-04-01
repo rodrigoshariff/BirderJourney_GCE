@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by rmendoza on 3/4/2016.
@@ -1001,19 +1002,23 @@ public class SimpleArray {
     };
 
 
-    public ArrayList<String> getSearchedBirds(String searchstring) {
+
+
+    public ArrayList getSearchedBirds(String searchstring) {
+
+        //ArrayList<BirdArrayItem> BirdItemArray = new ArrayList<>();
 
         ArrayList<String> array_list = new ArrayList<String>();
 
         for (int i = 0; i < birds.length; i++) {
             if (birds[i][1].toLowerCase().contains(searchstring.toLowerCase())) {
                 array_list.add(birds[i][1]);
+                //BirdArrayItem birdItem = new BirdArrayItem(birds[i][0],birds[i][1],birds[i][2],birds[i][3],birds[i][4],birds[i][5],"","","","");
+                //BirdItemArray.add(birdItem);
             }
         }
         return array_list;
     }
-
-
 
 }
 

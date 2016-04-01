@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.example.DBHelper_Java;
+import com.example.BirdArrayItem;
 import com.example.rmendoza.myapplication.gce_admin.myApi.MyApi;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -39,7 +40,7 @@ import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 public class MainActivityFragment extends Fragment {
 
     String searchText = "";
-    List GCE_Search = new ArrayList();
+    List<BirdArrayItem> GCE_Search = new ArrayList();
     String GCE_String = null;
     private static MyApi myApiService1 = null;
     ListView listView1 ;
@@ -118,19 +119,19 @@ public class MainActivityFragment extends Fragment {
 
     private void refreshListView() {
 
-        GCE_Search.addAll(Arrays.asList(GCE_String.split(", ")));
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, GCE_Search);
+        //GCE_Search.addAll(Arrays.asList(GCE_String.split(", ")));
+        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, GCE_Search.indexOf(1));
         listView1.setAdapter(arrayAdapter);
 
     }
 
 
-    public class EndpointsAsyncTask1 extends AsyncTask<Pair<Context, String>, Void, String> {
+    public class EndpointsAsyncTask1 extends AsyncTask<Pair<Context, String>, Void, List> {
 
         private Context context;
 
         @Override
-        protected String doInBackground(Pair<Context, String>... params) {
+        protected List doInBackground(Pair<Context, String>... params) {
             if (myApiService1 == null) {  // Only do this once
 
                 MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
@@ -143,16 +144,18 @@ public class MainActivityFragment extends Fragment {
             String name = params[0].second;
 
             try {
-                return myApiService1.searchDB(name).execute().getData().toString();
+                return myApiService1.searchDB(name).execute().getData(); //.toString();
             } catch (IOException e) {
-                return e.getMessage();
+                //return e.getMessage();
+                return null;
             }
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(List result) {
 //            Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-            GCE_String = result;
+            //GCE_String = result;
+            GCE_Search = result;
             refreshListView();
         }
     }
