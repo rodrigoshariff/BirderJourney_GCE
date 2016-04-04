@@ -15,12 +15,13 @@ public class BirdArrayItem {
     private String Description;
     private String IUCN_Category2014;
     private String ImageID;
+    private String ImageFileName;
 
     public BirdArrayItem(){}
 
     public BirdArrayItem(String textColumn0, String textColumn1, String textColumn2, String textColumn3,
                          String textColumn4, String textColumn5, String textColumn6, String textColumn7,
-                         String textColumn8, String textColumn9) {
+                         String textColumn8, String textColumn9, String textColumn10) {
         this.SISRecID = textColumn0;
         this.CommonName = textColumn1;
         this.ScientificName = textColumn2;
@@ -31,6 +32,7 @@ public class BirdArrayItem {
         this.Description = textColumn7;
         this.IUCN_Category2014 = textColumn8;
         this.ImageID = textColumn9;
+        this.ImageFileName = textColumn10;
     }
 
 
@@ -142,6 +144,17 @@ public class BirdArrayItem {
     public boolean setImageID(String ImageID)
     {
         this.ImageID = ImageID;
+        return true;
+    }
+
+    public String getImageFileName()
+    {
+        return this.ImageFileName;
+    }
+
+    public boolean setImageFileName(String ImageFileName)
+    {
+        this.ImageFileName = ImageFileName;
         return true;
     }
 

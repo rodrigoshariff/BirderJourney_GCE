@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/RPqzOghtjrQnnBcVroJ2k-2pMKI\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/f5ho9XSJhQT0Jclz78i2M1SF1iU\"",
  "discoveryVersion": "v1",
  "id": "myApi:v1",
  "name": "myApi",
@@ -87,6 +87,9 @@
      "type": "string"
     },
     "fullName": {
+     "type": "string"
+    },
+    "imageFileName": {
      "type": "string"
     },
     "imageID": {
