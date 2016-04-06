@@ -29,7 +29,8 @@ public class ImageAndTextArrayAdapter extends ArrayAdapter<BirdArrayItem> {
     /*private view holder class*/
     private class ViewHolder {
         ImageView imageView;
-        TextView txtTitle;
+        TextView txtFullName;
+        TextView txtFamily;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -41,13 +42,15 @@ public class ImageAndTextArrayAdapter extends ArrayAdapter<BirdArrayItem> {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.list_item_search_bird, null);
             holder = new ViewHolder();
-            holder.txtTitle = (TextView) convertView.findViewById(R.id.list_item_search_bird_name);
+            holder.txtFullName = (TextView) convertView.findViewById(R.id.list_item_search_bird_name);
+            holder.txtFamily = (TextView) convertView.findViewById(R.id.list_item_search_bird_family);
             holder.imageView = (ImageView) convertView.findViewById(R.id.list_item_search_bird_image);
             convertView.setTag(holder);
         } else
             holder = (ViewHolder) convertView.getTag();
 
-        holder.txtTitle.setText(rowItemBird.getFullName());
+        holder.txtFullName.setText(rowItemBird.getFullName());
+        holder.txtFamily.setText(rowItemBird.getFamily());
         String ImageURL = "";
         if (rowItemBird.getImageID().equals("TBD"))
         {

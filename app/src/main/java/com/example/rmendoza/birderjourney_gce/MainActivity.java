@@ -1,17 +1,21 @@
 package com.example.rmendoza.birderjourney_gce;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.BirdArrayItem;
 import com.example.DBHelper_Java;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
 
-    DBHelper mydb ;
-    DBHelper_Java mydb1;
+public class MainActivity extends AppCompatActivity implements SearchActivityFragment.OnBirdSelectedListener {
+
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
+    }
+
+    public void onBirdSelected(BirdArrayItem birdItemSelected) {
+        if (mTwoPane) {
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+
+//            Bundle args = new Bundle();
+//            args.putStringArray("IdAndNameArray", birdItemSelected);
+//            args.putBoolean("mTwoPane",mTwoPane);
+
+//            ArtistTopTenActivityFragment fragment = new ArtistTopTenActivityFragment();
+//            fragment.setArguments(args);
+//
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.artist_top_ten_container, fragment)
+//                    .commit();
+        } else {
+            Intent intent = new Intent(this, BirdDetailActivity.class);
+
+            intent.putExtra("commonName", birdItemSelected.getCommonName());
+            intent.putExtra("scientificName", birdItemSelected.getScientificName());
+            intent.putExtra("fullName", birdItemSelected.getFullName());
+            intent.putExtra("family", birdItemSelected.getFamily());
+            intent.putExtra("order", birdItemSelected.getOrder());
+            intent.putExtra("na_Occurrence", birdItemSelected.getNA_Occurrence());
+            intent.putExtra("description", birdItemSelected.getDescription());
+            intent.putExtra("iucn_Category2014", birdItemSelected.getIUCN_Category2014());
+            intent.putExtra("imageID", birdItemSelected.getImageID());
+            intent.putExtra("imageFileName", birdItemSelected.getImageFileName());
+
+            startActivity(intent);
+        }
     }
 
     @Override

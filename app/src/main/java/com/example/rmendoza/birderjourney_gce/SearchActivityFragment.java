@@ -1,9 +1,12 @@
 package com.example.rmendoza.birderjourney_gce;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -43,13 +47,20 @@ import org.json.JSONException;
  */
 public class SearchActivityFragment extends Fragment {
 
+    OnBirdSelectedListener mCallback;
+
+    // The container Activity must implement this interface so the frag can deliver messages
+    public interface OnBirdSelectedListener {
+        //Called by MainFragment when a list item is selected
+        public void onBirdSelected(BirdArrayItem birdItemSelected);
+    }
+
     String searchText = "";
     List GCE_Search = new ArrayList();
-    List GCE_Search1 = new ArrayList();
-    String GCE_String = null;
     private static MyApi myApiService1 = null;
     ListView searchResults;
     ImageAndTextArrayAdapter mSearchBirdAdapter;
+    private boolean mTwoPane;
 
     public SearchActivityFragment() {
     }
@@ -57,20 +68,20 @@ public class SearchActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //return inflater.inflate(R.layout.fragment_main, container, false);
-
-        //final DBHelper mydb = new DBHelper(getActivity());
-        //final DBHelper_Java mydb = new DBHelper_Java();
-
-
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         searchResults = (ListView) rootView.findViewById(R.id.searchResults);
         EditText editText = (EditText) rootView.findViewById(R.id.searchText);
 
-        if (searchText.length() > 0) {
+        if (!(savedInstanceState == null)) {
+            searchText = savedInstanceState.getString("searchText");
             editText.setText(searchText);
         }
-        ;
+
+        if (getActivity().findViewById(R.id.bird_detail_container) != null) {
+            mTwoPane = true;
+        } else {
+            mTwoPane = false;
+        }
 
 
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -85,15 +96,6 @@ public class SearchActivityFragment extends Fragment {
                         editText.clearFocus();
 
                         new EndpointsAsyncTask1().execute(new Pair<Context, String>(getActivity(), searchText));
-
-
-//                        EndpointsAsyncTask searchDB = new EndpointsAsyncTask();
-//                        searchDB.execute(searchText);
-//                        String testresults = "Great Blue Heron (Ardea herodias), Little Blue Heron (Egretta caerulea)";
-//                        GCE_Search.addAll(Arrays.asList(GCE_String.split(", ")));
-//
-//                        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, GCE_Search);
-//                        listView.setAdapter(arrayAdapter);
 
                         //hide keyboard
                         InputMethodManager in = (InputMethodManager) getActivity().
@@ -111,28 +113,56 @@ public class SearchActivityFragment extends Fragment {
                         searchResults.invalidateViews();
                     }
 
-
                 }
                 return false;
             }
         });
 
+        searchResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+             @Override
+             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                 BirdArrayItem birdItemSelected = new BirdArrayItem();
+                 birdItemSelected = (BirdArrayItem)GCE_Search.get(position);
+                 //send parameter to container activity MainActivity to start top ten activity or start top ten fragment on tablet layout
+                 mCallback.onBirdSelected(birdItemSelected);
+
+             }
+
+        });
 
         return rootView;
     }
 
 
-    private void refreshListView() {
+    //save bird text once back from API
+    @Override
+    public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        state.putString("searchText", searchText);
+    }
 
-        //GCE_Search.addAll(Arrays.asList(GCE_String.split(", ")));
-//        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, GCE_Search1);
-//        listView1.setAdapter(arrayAdapter);
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception.
+        try {
+            mCallback = (OnBirdSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnBirdSelectedListener");
+        }
+    }
+
+
+    private void refreshListView() {
 
         mSearchBirdAdapter = new ImageAndTextArrayAdapter(getActivity(),
                 R.id.list_item_search_bird, GCE_Search);
-
         searchResults.setAdapter(mSearchBirdAdapter);
-
 
     }
 
@@ -145,10 +175,8 @@ public class SearchActivityFragment extends Fragment {
         @Override
         protected List doInBackground(Pair<Context, String>... params) {
             if (myApiService1 == null) {  // Only do this once
-
                 MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                         .setRootUrl("https://birderjourney.appspot.com/_ah/api/");
-
                 myApiService1 = builder.build();
             }
 
@@ -167,34 +195,41 @@ public class SearchActivityFragment extends Fragment {
         protected void onPostExecute(List result) {
 //            Toast.makeText(context, result, Toast.LENGTH_LONG).show();
             GCE_Search.clear();
-            GCE_Search1.clear();
 
-            JSONArray BirdList = new JSONArray(result);
-            for (int i = 0; i < BirdList.length(); i++) {
-                BirdArrayItem birdItem = new BirdArrayItem();
-                try {
-                    birdItem.setCommonName(BirdList.getJSONObject(i).get("commonName").toString());
-                    birdItem.setScientificName(BirdList.getJSONObject(i).get("scientificName").toString());
-                    birdItem.setFullName(BirdList.getJSONObject(i).get("fullName").toString());
-                    birdItem.setFamily(BirdList.getJSONObject(i).get("family").toString());
-                    birdItem.setOrder(BirdList.getJSONObject(i).get("order").toString());
-                    birdItem.setNA_Occurrence(BirdList.getJSONObject(i).get("na_Occurrence").toString());
-                    birdItem.setDescription(BirdList.getJSONObject(i).get("description").toString());
-                    birdItem.setIUCN_Category2014(BirdList.getJSONObject(i).get("iucn_Category2014").toString());
-                    birdItem.setImageID(BirdList.getJSONObject(i).get("imageID").toString());
-                    birdItem.setImageFileName(BirdList.getJSONObject(i).get("imageFileName").toString());
+            if (result == null || result.size() == 0) {
 
-                } catch (Exception e) {
+                Toast.makeText(getActivity(), "Your search did not return any bird", Toast.LENGTH_SHORT).show();
 
-                    Log.e(LOG_TAG, "Error ==========>: " + e.getMessage(), e);
-                    //Toast.makeText(getActivity(), "Unable to connect", Toast.LENGTH_SHORT).show();
+            } else {
+
+                JSONArray BirdList = new JSONArray(result);
+                for (int i = 0; i < BirdList.length(); i++) {
+                    BirdArrayItem birdItem = new BirdArrayItem();
+                    try {
+                        birdItem.setCommonName(BirdList.getJSONObject(i).get("commonName").toString());
+                        birdItem.setScientificName(BirdList.getJSONObject(i).get("scientificName").toString());
+                        birdItem.setFullName(BirdList.getJSONObject(i).get("fullName").toString());
+                        birdItem.setFamily(BirdList.getJSONObject(i).get("family").toString());
+                        birdItem.setOrder(BirdList.getJSONObject(i).get("order").toString());
+                        birdItem.setNA_Occurrence(BirdList.getJSONObject(i).get("na_Occurrence").toString());
+                        birdItem.setDescription(BirdList.getJSONObject(i).get("description").toString());
+                        birdItem.setIUCN_Category2014(BirdList.getJSONObject(i).get("iucn_Category2014").toString());
+                        birdItem.setImageID(BirdList.getJSONObject(i).get("imageID").toString());
+                        birdItem.setImageFileName(BirdList.getJSONObject(i).get("imageFileName").toString());
+
+                    } catch (Exception e) {
+
+                        Log.e(LOG_TAG, "Error ==========>: " + e.getMessage(), e);
+                        //Toast.makeText(getActivity(), "Unable to connect", Toast.LENGTH_SHORT).show();
+                    }
+
+                    GCE_Search.add(birdItem);
+
                 }
-                GCE_Search.add(birdItem);
-                GCE_Search1.add(birdItem.getFullName());
+
+                refreshListView();
 
             }
-
-            refreshListView();
         }
     }
 
