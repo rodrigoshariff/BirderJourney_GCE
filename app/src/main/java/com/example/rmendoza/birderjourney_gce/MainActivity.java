@@ -1,5 +1,6 @@
 package com.example.rmendoza.birderjourney_gce;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -7,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.BirdArrayItem;
 import com.example.DBHelper_Java;
@@ -23,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
 
 //        mydb = new DBHelper(this);
 //        mydb.truncateBirdsTable();
@@ -93,6 +97,26 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        if (id == R.id.today){
+            Context context = getApplicationContext();
+            Toast.makeText(context, "Load summary report for today", Toast.LENGTH_SHORT).show();
+        }
+        if (id == R.id.week){
+            Context context = getApplicationContext();
+            Toast.makeText(context, "Load summary report for this week", Toast.LENGTH_SHORT).show();
+        }
+        if (id == R.id.month){
+            Context context = getApplicationContext();
+            Toast.makeText(context, "Load summary report for current month", Toast.LENGTH_SHORT).show();
+        }
+        if (id == R.id.year){
+            Context context = getApplicationContext();
+            Toast.makeText(context, "Load summary report for current year", Toast.LENGTH_SHORT).show();
+        }
+        if (id == R.id.ever){
+            Context context = getApplicationContext();
+            Toast.makeText(context, "Load summary report for ever", Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);
