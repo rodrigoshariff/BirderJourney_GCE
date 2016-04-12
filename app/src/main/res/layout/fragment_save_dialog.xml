@@ -7,7 +7,11 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/dialog_title" />
+        android:text="@string/dialog_title"
+        style="?android:attr/textAppearanceMedium"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp" />
 
     <EditText
         android:id="@+id/dialog_note"

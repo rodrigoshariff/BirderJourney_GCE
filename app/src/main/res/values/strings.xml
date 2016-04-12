@@ -5,5 +5,5 @@
     <string name="dialog_save">Save</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_title">Type a note and save</string>
-    <string name="dialog_hint">Note</string>
+    <string name="dialog_hint">note</string>
 </resources>

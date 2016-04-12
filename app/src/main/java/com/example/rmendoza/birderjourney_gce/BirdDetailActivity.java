@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-public class BirdDetailActivity extends AppCompatActivity {
+public class BirdDetailActivity extends AppCompatActivity implements SaveDialogFragment.SaveDialogListener{
 
     String commonName = "";
     String scientificName = "";
@@ -105,16 +105,22 @@ public class BirdDetailActivity extends AppCompatActivity {
 
 
         FloatingActionButton fabLog = (FloatingActionButton) findViewById(R.id.fabLog);
-        fabLog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment SaveDialogFragment = new SaveDialogFragment();
-                SaveDialogFragment.show(getSupportFragmentManager(), "dialog");
+        if (fabLog != null) {
+            fabLog.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogFragment SaveDialogFragment = new SaveDialogFragment();
+                    SaveDialogFragment.show(getSupportFragmentManager(), "SaveDialog");
 
-//                Context context = getApplicationContext();
-//                Toast.makeText(context, "Start dialog to log observation", Toast.LENGTH_SHORT).show();
-            }
-        });
+    //                Context context = getApplicationContext();
+    //                Toast.makeText(context, "Start dialog to log observation", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    public void onDialogSaveClick(DialogFragment dialog, String note) {
+        Toast.makeText(this, "Save button clicked and note: " + note, Toast.LENGTH_SHORT).show();
 
     }
 
