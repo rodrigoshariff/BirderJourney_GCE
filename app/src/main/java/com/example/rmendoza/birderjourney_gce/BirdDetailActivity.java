@@ -1,5 +1,6 @@
 package com.example.rmendoza.birderjourney_gce;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.rmendoza.birderjourney_gce.data.ProviderContract;
 import com.squareup.picasso.Picasso;
 
 public class BirdDetailActivity extends AppCompatActivity implements SaveDialogFragment.SaveDialogListener{
@@ -120,6 +122,16 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
     }
 
     public void onDialogSaveClick(DialogFragment dialog, String note) {
+
+        ContentValues values= new ContentValues();
+        values.put(ProviderContract.birds_table.FULLNAME_COL, commonName +" (" + scientificName + ")");
+        values.put(ProviderContract.birds_table.DATE_COL,"");
+        values.put(ProviderContract.birds_table.TIME_COL,"");
+        values.put(ProviderContract.birds_table.LOCATION_COL,"");
+        values.put(ProviderContract.birds_table.LAT_COL,"");
+        values.put(ProviderContract.birds_table.LONG_COL,"");
+        values.put(ProviderContract.birds_table.NOTE_COL, note);
+        getContentResolver().insert(ProviderContract.birds_table.CONTENT_URI,values);
         Toast.makeText(this, "Save button clicked and note: " + note, Toast.LENGTH_SHORT).show();
 
     }

@@ -2,16 +2,20 @@ package com.example.rmendoza.birderjourney_gce;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.BirdArrayItem;
 import com.example.DBHelper_Java;
+import com.example.rmendoza.birderjourney_gce.data.ProviderContract;
 
 import java.util.ArrayList;
 
@@ -100,7 +104,18 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         }
         if (id == R.id.today){
             Context context = getApplicationContext();
+
+            Cursor cursor = this.getContentResolver().query(
+                    ProviderContract.birds_table.CONTENT_URI,
+                    null, // leaving "columns" null just returns all the columns.
+                    null, // cols for "where" clause
+                    null, // values for "where" clause
+                    null  // sort order
+            );
+
+            Log.d("TAG", DatabaseUtils.dumpCursorToString(cursor));
             Toast.makeText(context, "Load summary report for today", Toast.LENGTH_SHORT).show();
+
         }
         if (id == R.id.week){
             Context context = getApplicationContext();
