@@ -125,7 +125,7 @@ public class SearchActivityFragment extends Fragment {
 
                  BirdArrayItem birdItemSelected = new BirdArrayItem();
                  birdItemSelected = (BirdArrayItem)GCE_Search.get(position);
-                 //send parameter to container activity MainActivity to start top ten activity or start top ten fragment on tablet layout
+
                  mCallback.onBirdSelected(birdItemSelected);
 
              }

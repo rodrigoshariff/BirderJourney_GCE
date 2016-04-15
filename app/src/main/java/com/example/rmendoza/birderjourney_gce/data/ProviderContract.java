@@ -29,6 +29,7 @@ public class ProviderContract {
         public static final String NOTE_COL = "note";
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH).build();
+        public static final Uri CONTENT_URI_GROUPBY = BASE_CONTENT_URI.buildUpon().appendPath(PATH).appendPath("groupby").build();
 
         //Types
         public static final String CONTENT_TYPE =
@@ -40,10 +41,6 @@ public class ProviderContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildBirds()
-        {
-            return CONTENT_URI;
-        }
     }
 
 

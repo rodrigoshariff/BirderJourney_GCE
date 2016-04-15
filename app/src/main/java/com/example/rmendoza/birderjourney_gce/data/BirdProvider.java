@@ -26,12 +26,12 @@ public class BirdProvider extends ContentProvider {
         return true;
     }
 
-
     static final UriMatcher uriMatcher;
     static{
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(ProviderContract.CONTENT_AUTHORITY, ProviderContract.PATH,1);
-        uriMatcher.addURI(ProviderContract.CONTENT_AUTHORITY, ProviderContract.PATH+"/#",2);
+        uriMatcher.addURI(ProviderContract.CONTENT_AUTHORITY, ProviderContract.PATH+"/groupby",2);
+        uriMatcher.addURI(ProviderContract.CONTENT_AUTHORITY, ProviderContract.PATH+"/#",3);
     }
 
 
@@ -50,8 +50,18 @@ public class BirdProvider extends ContentProvider {
                         sortOrder
                 );
                 break;
-
             case 2:
+                retCursor=mOpenHelper.getReadableDatabase().query(
+                        ProviderContract.BIRD_TABLE_NAME,
+                        projection,
+                        selection,
+                        selection==null? null : selectionArgs,
+                        "fullname",
+                        null,
+                        sortOrder
+                );
+                break;
+            case 3:
                 retCursor=mOpenHelper.getReadableDatabase().query(
                         ProviderContract.BIRD_TABLE_NAME,
                         projection,
@@ -107,11 +117,7 @@ public class BirdProvider extends ContentProvider {
         int count = 0;
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         switch (uriMatcher.match(uri)){
-            case 1:
-                count = db.delete(ProviderContract.BIRD_TABLE_NAME, selection, selectionArgs);
-                break;
-
-            case 2:
+            case 3:
                 String id = uri.getLastPathSegment(); //gets the id
                 count = db.delete(ProviderContract.BIRD_TABLE_NAME, selection + "_ID = " + id, selectionArgs);
                 break;
@@ -133,9 +139,11 @@ public class BirdProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)){
             case 1:
-                return "vnd.android.cursor.dir/vnd.example.friends";
+                return ProviderContract.birds_table.CONTENT_TYPE;
             case 2:
-                return "vnd.android.cursor.item/vnd.example.friends";
+                return ProviderContract.birds_table.CONTENT_TYPE;
+            case 3:
+                return ProviderContract.birds_table.CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
 

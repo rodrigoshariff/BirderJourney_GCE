@@ -105,15 +105,29 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         if (id == R.id.today){
             Context context = getApplicationContext();
 
-            Cursor cursor = this.getContentResolver().query(
-                    ProviderContract.birds_table.CONTENT_URI,
-                    null, // leaving "columns" null just returns all the columns.
-                    null, // cols for "where" clause
-                    null, // values for "where" clause
-                    null  // sort order
-            );
+            if (mTwoPane) {
+                // In two-pane mode, show the detail view in this activity by
+                // adding or replacing the detail fragment using a
+                // fragment transaction.
 
-            Log.d("TAG", DatabaseUtils.dumpCursorToString(cursor));
+//                Bundle args = new Bundle();
+//                args.putStringArray("IdAndNameArray", idAndName);
+//                args.putBoolean("mTwoPane",mTwoPane);
+//
+//                ArtistTopTenActivityFragment fragment = new ArtistTopTenActivityFragment();
+//                fragment.setArguments(args);
+//
+//                getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.artist_top_ten_container, fragment)
+//                        .commit();
+            } else {
+                Intent intent = new Intent(this, DistinctReportActivity.class);
+                intent.putExtra("Period", "today");
+                intent.putExtra("mTwoPane",mTwoPane);
+                startActivity(intent);
+            }
+
+
             Toast.makeText(context, "Load summary report for today", Toast.LENGTH_SHORT).show();
 
         }
