@@ -20,9 +20,8 @@ public class ProviderContract {
     public static final class birds_table implements BaseColumns
     {
         public static final String SISRECID_COL = "SISRecID";
-        public static final String FULLNAME_COL = "fullname";
-        public static final String DATE_COL = "date";
-        public static final String TIME_COL = "time";
+        public static final String COMMONNAME_COL = "commonName";
+        public static final String DATETIME_COL = "datetime";
         public static final String LOCATION_COL = "location";
         public static final String LAT_COL = "latitude";
         public static final String LONG_COL = "longitude";

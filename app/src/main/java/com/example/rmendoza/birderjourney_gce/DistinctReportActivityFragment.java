@@ -43,24 +43,30 @@ public class DistinctReportActivityFragment extends Fragment {
 
             Cursor cursorToday = getActivity().getContentResolver().query(
                     ProviderContract.birds_table.CONTENT_URI_GROUPBY,
-                    //null, // leaving "columns" null just returns all the columns.
-                    new String[]{"fullname, COUNT(*) as SpeciesCount"},
-                    //new String[]{"fullname + \"(\" +COUNT(*) + \")\""},
-                    null, // cols for "where" clause
-                    null, // values for "where" clause
-                    null  // sort order
+                    new String[]{"commonName as _id, COUNT(*) as birdCount"},
+                    "datetime between ? and ?",
+                    new String[] {"04-01-2016 22:33:00", "04-17-2016 23:59:59"},
+                    "commonName ASC"
             );
-
-            String[] from = new String[] {"answer"};
-            int[] to = new int[] {android.R.id.text1};
-
-/*            SimpleCursorAdapter quickadapter = new SimpleCursorAdapter(getActivity(),
-                    android.R.layout.simple_list_item_1,
-                    cursorToday, from, to);
-            lstvwdistinctResults.setAdapter(quickadapter);*/
-
-
             Log.d("TAG", DatabaseUtils.dumpCursorToString(cursorToday));
+
+
+            Cursor cursorAll = getActivity().getContentResolver().query(
+                    ProviderContract.birds_table.CONTENT_URI,
+                    null,
+                    "datetime between ? and ?",
+                    new String[] {"04-01-2016 22:33:00", "04-17-2016 23:59:59"},
+                    "commonName ASC"
+            );
+            Log.d("TAG1", DatabaseUtils.dumpCursorToString(cursorAll));
+
+
+
+            DistinctReportCursorAdapter distinctAdapter = new DistinctReportCursorAdapter(getActivity(), cursorToday);
+            lstvwdistinctResults.setAdapter(distinctAdapter);
+            titledistinctResults.setText(period);
+
+
         }
         return rootView;
     }

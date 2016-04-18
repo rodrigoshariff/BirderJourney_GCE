@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         } else {
             Intent intent = new Intent(this, BirdDetailActivity.class);
 
+            intent.putExtra("sisrecID", birdItemSelected.getSISRecID());
             intent.putExtra("commonName", birdItemSelected.getCommonName());
             intent.putExtra("scientificName", birdItemSelected.getScientificName());
             intent.putExtra("fullName", birdItemSelected.getFullName());

@@ -56,7 +56,7 @@ public class BirdProvider extends ContentProvider {
                         projection,
                         selection,
                         selection==null? null : selectionArgs,
-                        "fullname",
+                        "commonName",
                         null,
                         sortOrder
                 );

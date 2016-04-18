@@ -3,6 +3,8 @@ package com.example.rmendoza.birderjourney_gce;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +13,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,8 +22,13 @@ import android.widget.Toast;
 import com.example.rmendoza.birderjourney_gce.data.ProviderContract;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class BirdDetailActivity extends AppCompatActivity implements SaveDialogFragment.SaveDialogListener{
 
+    String sisrecID = "";
     String commonName = "";
     String scientificName = "";
     String family = "";
@@ -50,7 +58,8 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
 
         if (savedInstanceState == null) {
             Intent intent = getIntent();
-            commonName=intent.getStringExtra("commonName");
+            sisrecID = intent.getStringExtra("sisrecID");
+            commonName = intent.getStringExtra("commonName");
             scientificName=intent.getStringExtra("scientificName");
             family=intent.getStringExtra("family");
             order=intent.getStringExtra("order");
@@ -86,6 +95,8 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
         }
         else
         {
+
+            sisrecID = savedInstanceState.getString("sisrecID");
             commonName = savedInstanceState.getString("commonName");
             scientificName = savedInstanceState.getString("scientificName");
             family = savedInstanceState.getString("family");
@@ -123,22 +134,74 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
 
     public void onDialogSaveClick(DialogFragment dialog, String note) {
 
+        DateFormat df = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+
         ContentValues values= new ContentValues();
-        values.put(ProviderContract.birds_table.FULLNAME_COL, commonName +" (" + scientificName + ")");
-        values.put(ProviderContract.birds_table.DATE_COL,"");
-        values.put(ProviderContract.birds_table.TIME_COL,"");
-        values.put(ProviderContract.birds_table.LOCATION_COL,"");
+        values.put(ProviderContract.birds_table.SISRECID_COL, sisrecID);
+        values.put(ProviderContract.birds_table.COMMONNAME_COL, commonName);
+        values.put(ProviderContract.birds_table.DATETIME_COL, df.format(cal.getTime()));
+        values.put(ProviderContract.birds_table.LOCATION_COL, "");
         values.put(ProviderContract.birds_table.LAT_COL,"");
         values.put(ProviderContract.birds_table.LONG_COL,"");
         values.put(ProviderContract.birds_table.NOTE_COL, note);
         getContentResolver().insert(ProviderContract.birds_table.CONTENT_URI,values);
-        Toast.makeText(this, "Save button clicked and note: " + note, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Observation saved. Note: " + note, Toast.LENGTH_SHORT).show();
 
     }
+
+
+
+/*    public Location getLocation() {
+        boolean isGPSEnabled = false;
+        boolean isNetworkEnabled = false;
+        boolean canGetLocation = false;
+        Location location;
+        LocationManager locationManager;
+        GoogleApiClient mGoogleApiClient;
+
+        final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
+        final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+
+        try {
+            locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+            // getting GPS status
+            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            Log.v("TAG", "isGPSEnabled =" + isGPSEnabled);
+
+            // getting network status
+            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            Log.v("TAG", "isNetworkEnabled =" + isNetworkEnabled);
+
+            if (isNetworkEnabled) {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES,this);
+                Log.d("TAG", "Network");
+                if (locationManager != null) {
+                    location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                }
+            }
+            // if GPS Enabled get lat/long using GPS Services
+            if (isGPSEnabled && location == null) {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                Log.d("TAG", "GPS Enabled");
+                if (locationManager != null) {
+                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                }
+            }
+        } catch (Exception e) {
+            Log.e("TAG", "Location Not Found");
+        }
+        return location;
+    }*/
+
+
+
 
     @Override
     public void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
+        state.putString("sisrecID", sisrecID);
         state.putString("commonName", commonName);
         state.putString("scientificName", scientificName);
         state.putString("family", family);

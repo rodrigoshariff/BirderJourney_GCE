@@ -7,8 +7,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.example.rmendoza.birderjourney_gce.DistinctReportActivityFragment"
-    tools:showIn="@layout/activity_distinct_report">
+    tools:context="com.example.rmendoza.birderjourney_gce.DistinctReportActivityFragment">
 
     <TextView
         android:id="@+id/distincReportTitle"
@@ -17,7 +16,6 @@
         android:text="@string/distinct_title"
         style="?android:attr/textAppearanceLarge"
         android:textStyle="bold"
-        android:background="@drawable/edittext_border"
         android:layout_marginTop="56dp"
         android:layout_gravity="center"
         android:gravity="center_horizontal"

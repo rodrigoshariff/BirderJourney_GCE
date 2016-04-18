@@ -25,11 +25,10 @@ public class DBHelper  extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         final String SQL_CREATE_BIRDS_TABLE = "CREATE TABLE " + ProviderContract.BIRD_TABLE_NAME + " ("+
-                ProviderContract.birds_table._ID + " INTEGER PRIMARY KEY," +
+                ProviderContract.birds_table._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 ProviderContract.birds_table.SISRECID_COL + " TEXT ," +
-                ProviderContract.birds_table.FULLNAME_COL + " TEXT ," +
-                ProviderContract.birds_table.DATE_COL + " TEXT ," +
-                ProviderContract.birds_table.TIME_COL + " TEXT ," +
+                ProviderContract.birds_table.COMMONNAME_COL + " TEXT ," +
+                ProviderContract.birds_table.DATETIME_COL + " TEXT ," +
                 ProviderContract.birds_table.LOCATION_COL + " TEXT ," +
                 ProviderContract.birds_table.LAT_COL + " TEXT ," +
                 ProviderContract.birds_table.LONG_COL + " TEXT ," +

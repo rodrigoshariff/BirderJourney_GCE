@@ -206,6 +206,7 @@ public class SearchActivityFragment extends Fragment {
                 for (int i = 0; i < BirdList.length(); i++) {
                     BirdArrayItem birdItem = new BirdArrayItem();
                     try {
+                        birdItem.setSISRecID(BirdList.getJSONObject(i).get("sisrecID").toString());
                         birdItem.setCommonName(BirdList.getJSONObject(i).get("commonName").toString());
                         birdItem.setScientificName(BirdList.getJSONObject(i).get("scientificName").toString());
                         birdItem.setFullName(BirdList.getJSONObject(i).get("fullName").toString());
