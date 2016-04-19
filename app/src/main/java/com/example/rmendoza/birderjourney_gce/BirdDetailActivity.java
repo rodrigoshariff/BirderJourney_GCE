@@ -1,16 +1,21 @@
 package com.example.rmendoza.birderjourney_gce;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -20,13 +25,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rmendoza.birderjourney_gce.data.ProviderContract;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class BirdDetailActivity extends AppCompatActivity implements SaveDialogFragment.SaveDialogListener{
+public class BirdDetailActivity extends AppCompatActivity implements SaveDialogFragment.SaveDialogListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     String sisrecID = "";
     String commonName = "";
@@ -36,6 +45,12 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
     String iucn_Category2014 = "";
     String description = "";
     String ImageURL = "";
+    String currentLat = "";
+    String currentLong = "";
+    GoogleApiClient mGoogleApiClient;
+    Location mCurrentLocation;
+    LocationRequest mLocationRequest;
+    private static final int REQUEST_FINE_LOCATION=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +62,10 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
 
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+
+
+        buildGoogleApiClient();
+
 
         final ImageView ViewBirdImage = (ImageView) findViewById(R.id.birdImage);
         final TextView ViewCommonName = (TextView) findViewById(R.id.txtCommonName);
@@ -60,17 +79,14 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
             Intent intent = getIntent();
             sisrecID = intent.getStringExtra("sisrecID");
             commonName = intent.getStringExtra("commonName");
-            scientificName=intent.getStringExtra("scientificName");
-            family=intent.getStringExtra("family");
-            order=intent.getStringExtra("order");
-            iucn_Category2014=intent.getStringExtra("iucn_Category2014");
-            description=intent.getStringExtra("description");
-            if (intent.getStringExtra("imageID").equals("TBD"))
-            {
+            scientificName = intent.getStringExtra("scientificName");
+            family = intent.getStringExtra("family");
+            order = intent.getStringExtra("order");
+            iucn_Category2014 = intent.getStringExtra("iucn_Category2014");
+            description = intent.getStringExtra("description");
+            if (intent.getStringExtra("imageID").equals("TBD")) {
                 ImageURL = "http://vignette2.wikia.nocookie.net/legendmarielu/images/b/b4/No_image_available.jpg/revision/latest?cb=20130511180903";
-            }
-            else
-            {
+            } else {
                 ImageURL = "https://rodrigoshariff.smugmug.com/Bird/Birder-Journey/" + intent.getStringExtra("imageID") + "/0/L/" + intent.getStringExtra("imageFileName");
             }
 
@@ -92,9 +108,7 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.bird_detail_container, fragment)
                     .commit();*/
-        }
-        else
-        {
+        } else {
 
             sisrecID = savedInstanceState.getString("sisrecID");
             commonName = savedInstanceState.getString("commonName");
@@ -125,10 +139,124 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
                     DialogFragment SaveDialogFragment = new SaveDialogFragment();
                     SaveDialogFragment.show(getSupportFragmentManager(), "SaveDialog");
 
-    //                Context context = getApplicationContext();
-    //                Toast.makeText(context, "Start dialog to log observation", Toast.LENGTH_SHORT).show();
+                    //                Context context = getApplicationContext();
+                    //                Toast.makeText(context, "Start dialog to log observation", Toast.LENGTH_SHORT).show();
                 }
             });
+        }
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    mLocationRequest= new LocationRequest();
+                    mLocationRequest.setInterval(100);
+                    mLocationRequest.setFastestInterval(100);
+                    mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+                    LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (mCurrentLocation != null) {
+                currentLat = String.valueOf(mCurrentLocation.getLatitude());
+                currentLong = String.valueOf(mCurrentLocation.getLongitude());
+            }
+            else {
+                currentLat = "";
+                currentLong = "";
+            }
+
+                }
+                else{
+                    // no granted
+                }
+                return;
+            }
+        }
+    }
+
+
+    @Override
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+        super.onStop();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+        Log.d("TAG1", connectionResult.getErrorMessage());
+    }
+
+    public void onDisconnected() {
+
+        Log.d("TAG1", "Disconnected");
+    }
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+        // The connection to Google Play services was lost for some reason. We call connect() to
+        // attempt to re-establish the connection.
+        Log.d("TAG", "Connection suspended");
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d("locationtesting", "accuracy: " + location.getAccuracy() + " lat: " + location.getLatitude() + " lon: " + location.getLongitude());
+        Toast.makeText(this,"Location Changed",Toast.LENGTH_SHORT).show();
+    }
+
+
+    public void onStatusChanged (String string, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        REQUEST_FINE_LOCATION);
+
+        }
+        else
+        {
+            mLocationRequest= new LocationRequest();
+            mLocationRequest.setInterval(100);
+            mLocationRequest.setFastestInterval(100);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (mCurrentLocation != null) {
+                currentLat = String.valueOf(mCurrentLocation.getLatitude());
+                currentLong = String.valueOf(mCurrentLocation.getLongitude());
+            }
+            else {
+                currentLat = "";
+                currentLong = "";
+            }
         }
     }
 
@@ -142,58 +270,13 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
         values.put(ProviderContract.birds_table.COMMONNAME_COL, commonName);
         values.put(ProviderContract.birds_table.DATETIME_COL, df.format(cal.getTime()));
         values.put(ProviderContract.birds_table.LOCATION_COL, "");
-        values.put(ProviderContract.birds_table.LAT_COL,"");
-        values.put(ProviderContract.birds_table.LONG_COL,"");
+        values.put(ProviderContract.birds_table.LAT_COL, currentLat);
+        values.put(ProviderContract.birds_table.LONG_COL, currentLong);
         values.put(ProviderContract.birds_table.NOTE_COL, note);
         getContentResolver().insert(ProviderContract.birds_table.CONTENT_URI,values);
         Toast.makeText(this, "Observation saved. Note: " + note, Toast.LENGTH_SHORT).show();
 
     }
-
-
-
-/*    public Location getLocation() {
-        boolean isGPSEnabled = false;
-        boolean isNetworkEnabled = false;
-        boolean canGetLocation = false;
-        Location location;
-        LocationManager locationManager;
-        GoogleApiClient mGoogleApiClient;
-
-        final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
-        final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
-
-        try {
-            locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-            // getting GPS status
-            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            Log.v("TAG", "isGPSEnabled =" + isGPSEnabled);
-
-            // getting network status
-            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-            Log.v("TAG", "isNetworkEnabled =" + isNetworkEnabled);
-
-            if (isNetworkEnabled) {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES,this);
-                Log.d("TAG", "Network");
-                if (locationManager != null) {
-                    location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                }
-            }
-            // if GPS Enabled get lat/long using GPS Services
-            if (isGPSEnabled && location == null) {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                Log.d("TAG", "GPS Enabled");
-                if (locationManager != null) {
-                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                }
-            }
-        } catch (Exception e) {
-            Log.e("TAG", "Location Not Found");
-        }
-        return location;
-    }*/
 
 
 

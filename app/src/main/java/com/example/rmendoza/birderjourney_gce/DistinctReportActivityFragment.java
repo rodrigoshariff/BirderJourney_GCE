@@ -44,8 +44,8 @@ public class DistinctReportActivityFragment extends Fragment {
             Cursor cursorToday = getActivity().getContentResolver().query(
                     ProviderContract.birds_table.CONTENT_URI_GROUPBY,
                     new String[]{"commonName as _id, COUNT(*) as birdCount"},
-                    "datetime between ? and ?",
-                    new String[] {"04-01-2016 22:33:00", "04-17-2016 23:59:59"},
+                    null, //"datetime between ? and ?",
+                    null,//new String[] {"04-01-2016 22:33:00", "04-17-2016 23:59:59"},
                     "commonName ASC"
             );
             Log.d("TAG", DatabaseUtils.dumpCursorToString(cursorToday));
@@ -54,8 +54,8 @@ public class DistinctReportActivityFragment extends Fragment {
             Cursor cursorAll = getActivity().getContentResolver().query(
                     ProviderContract.birds_table.CONTENT_URI,
                     null,
-                    "datetime between ? and ?",
-                    new String[] {"04-01-2016 22:33:00", "04-17-2016 23:59:59"},
+                    null, //"datetime between ? and ?",
+                    null, //new String[] {"04-01-2016 22:33:00", "04-17-2016 23:59:59"},
                     "commonName ASC"
             );
             Log.d("TAG1", DatabaseUtils.dumpCursorToString(cursorAll));
