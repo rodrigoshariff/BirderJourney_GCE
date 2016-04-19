@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.os.ResultReceiver;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -35,7 +37,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class BirdDetailActivity extends AppCompatActivity implements SaveDialogFragment.SaveDialogListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class BirdDetailActivity extends AppCompatActivity implements SaveDialogFragment.SaveDialogListener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+//, com.google.android.gms.location.LocationListener
 
     String sisrecID = "";
     String commonName = "";
@@ -50,7 +54,25 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
     GoogleApiClient mGoogleApiClient;
     Location mCurrentLocation;
     LocationRequest mLocationRequest;
-    private static final int REQUEST_FINE_LOCATION=0;
+    private static final int REQUEST_FINE_LOCATION = 0;
+    AddressResultReceiver mResultReceiver;
+    String nearcity = "unknown";
+
+
+    public class AddressResultReceiver extends ResultReceiver {
+
+        public AddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            nearcity = resultData.getString(GetLocalityService.Constants.RESULT_DATA_KEY);
+            if (resultCode == GetLocalityService.Constants.SUCCESS_RESULT) {
+                Context context = getApplicationContext();
+                Toast.makeText(context, R.string.address_found, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +84,6 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
 
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-
 
         buildGoogleApiClient();
 
@@ -90,24 +111,6 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
                 ImageURL = "https://rodrigoshariff.smugmug.com/Bird/Birder-Journey/" + intent.getStringExtra("imageID") + "/0/L/" + intent.getStringExtra("imageFileName");
             }
 
-/*          Bundle arguments = new Bundle();
-            arguments.putString("commonName", getIntent().getStringExtra("commonName"));
-            arguments.putString("scientificName", getIntent().getStringExtra("scientificName"));
-            arguments.putString("fullName", getIntent().getStringExtra("fullName"));
-            arguments.putString("family", getIntent().getStringExtra("family"));
-            arguments.putString("order", getIntent().getStringExtra("order"));
-            arguments.putString("na_Occurrence", getIntent().getStringExtra("na_Occurrence"));
-            arguments.putString("description", getIntent().getStringExtra("description"));
-            arguments.putString("iucn_Category2014", getIntent().getStringExtra("iucn_Category2014"));
-            arguments.putString("imageID", getIntent().getStringExtra("imageID"));
-            arguments.putString("imageFileName", getIntent().getStringExtra("imageFileName"));
-
-            BirdDetailActivityFragment fragment = new BirdDetailActivityFragment();
-            fragment.setArguments(arguments);
-
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.bird_detail_container, fragment)
-                    .commit();*/
         } else {
 
             sisrecID = savedInstanceState.getString("sisrecID");
@@ -119,7 +122,6 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
             description = savedInstanceState.getString("description");
             ImageURL = savedInstanceState.getString("imageURL");
         }
-
 
         ViewCommonName.setText(commonName);
         collapsingToolbar.setTitle(commonName);
@@ -139,8 +141,8 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
                     DialogFragment SaveDialogFragment = new SaveDialogFragment();
                     SaveDialogFragment.show(getSupportFragmentManager(), "SaveDialog");
 
-                    //                Context context = getApplicationContext();
-                    //                Toast.makeText(context, "Start dialog to log observation", Toast.LENGTH_SHORT).show();
+                    // Context context = getApplicationContext();
+                    // Toast.makeText(context, "Start dialog to log observation", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -154,37 +156,12 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
                 .build();
     }
 
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    mLocationRequest= new LocationRequest();
-                    mLocationRequest.setInterval(100);
-                    mLocationRequest.setFastestInterval(100);
-                    mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-                    LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if (mCurrentLocation != null) {
-                currentLat = String.valueOf(mCurrentLocation.getLatitude());
-                currentLong = String.valueOf(mCurrentLocation.getLongitude());
-            }
-            else {
-                currentLat = "";
-                currentLong = "";
-            }
-
-                }
-                else{
-                    // no granted
-                }
-                return;
-            }
-        }
+    protected void startIntentService() {
+        mResultReceiver = new AddressResultReceiver(new Handler());
+        Intent intent = new Intent(this, GetLocalityService.class);
+        intent.putExtra(GetLocalityService.Constants.RECEIVER, mResultReceiver);
+        intent.putExtra(GetLocalityService.Constants.LOCATION_DATA_EXTRA, mCurrentLocation);
+        startService(intent);
     }
 
 
@@ -221,65 +198,92 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
         mGoogleApiClient.connect();
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d("locationtesting", "accuracy: " + location.getAccuracy() + " lat: " + location.getLatitude() + " lon: " + location.getLongitude());
-        Toast.makeText(this,"Location Changed",Toast.LENGTH_SHORT).show();
-    }
+//    @Override
+//    public void onLocationChanged(Location location) {
+//        Log.d("locationtesting", "accuracy: " + location.getAccuracy() + " lat: " + location.getLatitude() + " lon: " + location.getLongitude());
+//        Toast.makeText(this, "Location Changed", Toast.LENGTH_SHORT).show();
+//    }
 
-
-    public void onStatusChanged (String string, int i, Bundle bundle) {
+    public void onStatusChanged(String string, int i, Bundle bundle) {
 
     }
 
     @Override
     public void onConnected(Bundle bundle) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        REQUEST_FINE_LOCATION);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
 
-        }
-        else
-        {
-            mLocationRequest= new LocationRequest();
-            mLocationRequest.setInterval(100);
-            mLocationRequest.setFastestInterval(100);
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        } else {
+//            mLocationRequest = new LocationRequest();
+//            mLocationRequest.setInterval(100);
+//            mLocationRequest.setFastestInterval(100);
+//            mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+//            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (mCurrentLocation != null) {
                 currentLat = String.valueOf(mCurrentLocation.getLatitude());
                 currentLong = String.valueOf(mCurrentLocation.getLongitude());
-            }
-            else {
+                startIntentService();
+
+            } else {
                 currentLat = "";
                 currentLong = "";
             }
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+//                    mLocationRequest = new LocationRequest();
+//                    mLocationRequest.setInterval(100);
+//                    mLocationRequest.setFastestInterval(100);
+//                    mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+//                    LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+                    mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                    if (mCurrentLocation != null) {
+                        currentLat = String.valueOf(mCurrentLocation.getLatitude());
+                        currentLong = String.valueOf(mCurrentLocation.getLongitude());
+                        startIntentService();
+                    } else {
+                        currentLat = "";
+                        currentLong = "";
+                    }
+
+                } else {
+                    // no granted
+                }
+                return;
+            }
+        }
+    }
+
+
     public void onDialogSaveClick(DialogFragment dialog, String note) {
 
         DateFormat df = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();
 
-        ContentValues values= new ContentValues();
+        ContentValues values = new ContentValues();
         values.put(ProviderContract.birds_table.SISRECID_COL, sisrecID);
         values.put(ProviderContract.birds_table.COMMONNAME_COL, commonName);
         values.put(ProviderContract.birds_table.DATETIME_COL, df.format(cal.getTime()));
-        values.put(ProviderContract.birds_table.LOCATION_COL, "");
+        values.put(ProviderContract.birds_table.LOCATION_COL, nearcity);
         values.put(ProviderContract.birds_table.LAT_COL, currentLat);
         values.put(ProviderContract.birds_table.LONG_COL, currentLong);
         values.put(ProviderContract.birds_table.NOTE_COL, note);
-        getContentResolver().insert(ProviderContract.birds_table.CONTENT_URI,values);
+        getContentResolver().insert(ProviderContract.birds_table.CONTENT_URI, values);
         Toast.makeText(this, "Observation saved. Note: " + note, Toast.LENGTH_SHORT).show();
 
     }
-
-
-
 
     @Override
     public void onSaveInstanceState(Bundle state) {

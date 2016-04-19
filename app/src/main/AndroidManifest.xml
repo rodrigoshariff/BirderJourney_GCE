@@ -14,7 +14,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -52,6 +55,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.rmendoza.birderjourney_gce.MainActivity" />
         </activity>
+
+        <service
+            android:name=".GetLocalityService"
+            android:exported="false"></service>
     </application>
 
 </manifest>
