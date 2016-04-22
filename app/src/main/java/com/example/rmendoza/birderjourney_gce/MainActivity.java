@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         }
     }
 
-    public void OnSpeciesSelected(String speciesCommonName, boolean mTwoPane) {
+    public void OnSpeciesSelected(String speciesCommonName, String period, boolean mTwoPane) {
         if (mTwoPane) {
 //            Bundle args = new Bundle();
 //            args.putStringArray("IdAndNameArray", idAndName);

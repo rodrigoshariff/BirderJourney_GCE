@@ -2,24 +2,19 @@ package com.example.rmendoza.birderjourney_gce;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.rmendoza.birderjourney_gce.data.ProviderContract;
-import com.example.rmendoza.birderjourney_gce.data.Utilities;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -34,7 +29,7 @@ public class DistinctReportActivityFragment extends Fragment implements LoaderMa
     // The container Activity must implement this interface so the frag can deliver messages
     public interface OnSpeciesSelectedListener {
 
-        public void OnSpeciesSelected(String SpeciesCommonName, boolean mTwoPane);
+        public void OnSpeciesSelected(String SpeciesCommonName, String period, boolean mTwoPane);
     }
 
 
@@ -74,7 +69,7 @@ public class DistinctReportActivityFragment extends Fragment implements LoaderMa
                 Cursor distinctCursor = distinctAdapter.getCursor();
                 if (distinctCursor != null && distinctCursor.moveToPosition(position)) {
                     String speciesCommonName = distinctCursor.getString(0);
-                            mCallback.OnSpeciesSelected(speciesCommonName, mTwoPane);
+                            mCallback.OnSpeciesSelected(speciesCommonName, period, mTwoPane);
                 }
             }
         });

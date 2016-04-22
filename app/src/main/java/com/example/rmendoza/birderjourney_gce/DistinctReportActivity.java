@@ -47,7 +47,7 @@ public class DistinctReportActivity extends AppCompatActivity implements  Distin
         });*/
     }
 
-    public void OnSpeciesSelected(String speciesCommonName, boolean mTwoPane) {
+    public void OnSpeciesSelected(String speciesCommonName, String period, boolean mTwoPane) {
         if (mTwoPane) {
 //            Bundle args = new Bundle();
 //            args.putStringArray("IdAndNameArray", idAndName);
@@ -66,6 +66,7 @@ public class DistinctReportActivity extends AppCompatActivity implements  Distin
 
             Intent intent = new Intent(this, DetailReportActivity.class);
             intent.putExtra("speciesCommonName", speciesCommonName);
+            intent.putExtra("period", period);
             intent.putExtra("mTwoPane", mTwoPane);
             startActivity(intent);
         }
