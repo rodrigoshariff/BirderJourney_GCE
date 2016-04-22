@@ -10,6 +10,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -55,7 +57,7 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
     Location mCurrentLocation;
     LocationRequest mLocationRequest;
     private static final int REQUEST_FINE_LOCATION = 0;
-    AddressResultReceiver mResultReceiver;
+
     String nearcity = "unknown";
 
 
@@ -64,6 +66,7 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
         public AddressResultReceiver(Handler handler) {
             super(handler);
         }
+
         @Override
         protected void onReceiveResult(int resultCode, Bundle resultData) {
             nearcity = resultData.getString(GetLocalityService.Constants.RESULT_DATA_KEY);
@@ -86,7 +89,6 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
         buildGoogleApiClient();
-
 
         final ImageView ViewBirdImage = (ImageView) findViewById(R.id.birdImage);
         final TextView ViewCommonName = (TextView) findViewById(R.id.txtCommonName);
@@ -138,6 +140,7 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
             fabLog.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    startIntentService();
                     DialogFragment SaveDialogFragment = new SaveDialogFragment();
                     SaveDialogFragment.show(getSupportFragmentManager(), "SaveDialog");
 
@@ -157,6 +160,7 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
     }
 
     protected void startIntentService() {
+        AddressResultReceiver mResultReceiver;
         mResultReceiver = new AddressResultReceiver(new Handler());
         Intent intent = new Intent(this, GetLocalityService.class);
         intent.putExtra(GetLocalityService.Constants.RECEIVER, mResultReceiver);
@@ -226,7 +230,7 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
             if (mCurrentLocation != null) {
                 currentLat = String.valueOf(mCurrentLocation.getLatitude());
                 currentLong = String.valueOf(mCurrentLocation.getLongitude());
-                startIntentService();
+//                startIntentService();
 
             } else {
                 currentLat = "";
@@ -248,11 +252,12 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
 //                    mLocationRequest.setFastestInterval(100);
 //                    mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 //                    LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
                     mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                     if (mCurrentLocation != null) {
                         currentLat = String.valueOf(mCurrentLocation.getLatitude());
                         currentLong = String.valueOf(mCurrentLocation.getLongitude());
-                        startIntentService();
+//                        startIntentService();
                     } else {
                         currentLat = "";
                         currentLong = "";

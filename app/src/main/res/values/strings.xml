@@ -12,4 +12,5 @@
     <string name="invalid_lat_long_used">invalid_lat_long_used</string>
     <string name="no_address_found">no_address_found</string>
     <string name="address_found">address_found</string>
+    <string name="title_activity_detail_report">DetailReportActivity</string>
 </resources>

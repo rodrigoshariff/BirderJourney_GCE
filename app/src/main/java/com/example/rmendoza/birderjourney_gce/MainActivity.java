@@ -19,7 +19,7 @@ import com.example.rmendoza.birderjourney_gce.data.ProviderContract;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements SearchActivityFragment.OnBirdSelectedListener {
+public class MainActivity extends AppCompatActivity implements SearchActivityFragment.OnBirdSelectedListener,  DistinctReportActivityFragment.OnSpeciesSelectedListener  {
 
     private boolean mTwoPane;
 
@@ -85,6 +85,31 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         }
     }
 
+    public void OnSpeciesSelected(String speciesCommonName, boolean mTwoPane) {
+        if (mTwoPane) {
+//            Bundle args = new Bundle();
+//            args.putStringArray("IdAndNameArray", idAndName);
+//            args.putBoolean("mTwoPane",mTwoPane);
+//
+//            ArtistTopTenActivityFragment fragment = new ArtistTopTenActivityFragment();
+//            fragment.setArguments(args);
+//
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.artist_top_ten_container, fragment)
+//                    .commit();
+        } else {
+
+            Context context = getApplicationContext();
+            Toast.makeText(context, "Going to detail report for" + speciesCommonName, Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(this, DetailReportActivity.class);
+            intent.putExtra("speciesCommonName", speciesCommonName);
+            intent.putExtra("mTwoPane",mTwoPane);
+            startActivity(intent);
+        }
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -104,8 +129,6 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
             return true;
         }
         if (id == R.id.today){
-            Context context = getApplicationContext();
-
             if (mTwoPane) {
                 // In two-pane mode, show the detail view in this activity by
                 // adding or replacing the detail fragment using a
@@ -128,23 +151,111 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
                 startActivity(intent);
             }
 
-
+            Context context = getApplicationContext();
             Toast.makeText(context, "Load summary report for today", Toast.LENGTH_SHORT).show();
 
         }
         if (id == R.id.week){
+            if (mTwoPane) {
+                // In two-pane mode, show the detail view in this activity by
+                // adding or replacing the detail fragment using a
+                // fragment transaction.
+
+//                Bundle args = new Bundle();
+//                args.putStringArray("IdAndNameArray", idAndName);
+//                args.putBoolean("mTwoPane",mTwoPane);
+//
+//                ArtistTopTenActivityFragment fragment = new ArtistTopTenActivityFragment();
+//                fragment.setArguments(args);
+//
+//                getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.artist_top_ten_container, fragment)
+//                        .commit();
+            } else {
+                Intent intent = new Intent(this, DistinctReportActivity.class);
+                intent.putExtra("Period", "week");
+                intent.putExtra("mTwoPane",mTwoPane);
+                startActivity(intent);
+            }
+
             Context context = getApplicationContext();
             Toast.makeText(context, "Load summary report for this week", Toast.LENGTH_SHORT).show();
         }
         if (id == R.id.month){
+            if (mTwoPane) {
+                // In two-pane mode, show the detail view in this activity by
+                // adding or replacing the detail fragment using a
+                // fragment transaction.
+
+//                Bundle args = new Bundle();
+//                args.putStringArray("IdAndNameArray", idAndName);
+//                args.putBoolean("mTwoPane",mTwoPane);
+//
+//                ArtistTopTenActivityFragment fragment = new ArtistTopTenActivityFragment();
+//                fragment.setArguments(args);
+//
+//                getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.artist_top_ten_container, fragment)
+//                        .commit();
+            } else {
+                Intent intent = new Intent(this, DistinctReportActivity.class);
+                intent.putExtra("Period", "month");
+                intent.putExtra("mTwoPane",mTwoPane);
+                startActivity(intent);
+            }
+
             Context context = getApplicationContext();
             Toast.makeText(context, "Load summary report for current month", Toast.LENGTH_SHORT).show();
         }
         if (id == R.id.year){
+            if (mTwoPane) {
+                // In two-pane mode, show the detail view in this activity by
+                // adding or replacing the detail fragment using a
+                // fragment transaction.
+
+//                Bundle args = new Bundle();
+//                args.putStringArray("IdAndNameArray", idAndName);
+//                args.putBoolean("mTwoPane",mTwoPane);
+//
+//                ArtistTopTenActivityFragment fragment = new ArtistTopTenActivityFragment();
+//                fragment.setArguments(args);
+//
+//                getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.artist_top_ten_container, fragment)
+//                        .commit();
+            } else {
+                Intent intent = new Intent(this, DistinctReportActivity.class);
+                intent.putExtra("Period", "year");
+                intent.putExtra("mTwoPane",mTwoPane);
+                startActivity(intent);
+            }
+
             Context context = getApplicationContext();
             Toast.makeText(context, "Load summary report for current year", Toast.LENGTH_SHORT).show();
         }
         if (id == R.id.ever){
+            if (mTwoPane) {
+                // In two-pane mode, show the detail view in this activity by
+                // adding or replacing the detail fragment using a
+                // fragment transaction.
+
+//                Bundle args = new Bundle();
+//                args.putStringArray("IdAndNameArray", idAndName);
+//                args.putBoolean("mTwoPane",mTwoPane);
+//
+//                ArtistTopTenActivityFragment fragment = new ArtistTopTenActivityFragment();
+//                fragment.setArguments(args);
+//
+//                getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.artist_top_ten_container, fragment)
+//                        .commit();
+            } else {
+                Intent intent = new Intent(this, DistinctReportActivity.class);
+                intent.putExtra("Period", "ever");
+                intent.putExtra("mTwoPane",mTwoPane);
+                startActivity(intent);
+            }
+
             Context context = getApplicationContext();
             Toast.makeText(context, "Load summary report for ever", Toast.LENGTH_SHORT).show();
         }

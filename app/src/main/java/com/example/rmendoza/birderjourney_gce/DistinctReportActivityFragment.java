@@ -1,32 +1,48 @@
 package com.example.rmendoza.birderjourney_gce;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.rmendoza.birderjourney_gce.data.ProviderContract;
+import com.example.rmendoza.birderjourney_gce.data.Utilities;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DistinctReportActivityFragment extends Fragment {
+public class DistinctReportActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     public DistinctReportActivityFragment() {
     }
+
+    OnSpeciesSelectedListener mCallback;
+
+    // The container Activity must implement this interface so the frag can deliver messages
+    public interface OnSpeciesSelectedListener {
+
+        public void OnSpeciesSelected(String SpeciesCommonName, boolean mTwoPane);
+    }
+
 
     String period = "";
     private boolean mTwoPane = false;
     private ListView lstvwdistinctResults = null;
     private TextView titledistinctResults = null;
+    public DistinctReportCursorAdapter distinctAdapter;
 
 
     @Override
@@ -41,33 +57,71 @@ public class DistinctReportActivityFragment extends Fragment {
             period = arguments.getString("Period");
             mTwoPane = arguments.getBoolean("mTwoPane");
 
-            Cursor cursorToday = getActivity().getContentResolver().query(
-                    ProviderContract.birds_table.CONTENT_URI_GROUPBY,
-                    new String[]{"commonName as _id, COUNT(*) as birdCount"},
-                    null, //"datetime between ? and ?",
-                    null,//new String[] {"04-01-2016 22:33:00", "04-17-2016 23:59:59"},
-                    "commonName ASC"
-            );
-            Log.d("TAG", DatabaseUtils.dumpCursorToString(cursorToday));
+//            Log.d("TAG", DatabaseUtils.dumpCursorToString(cursorToday));
 
-
-            Cursor cursorAll = getActivity().getContentResolver().query(
-                    ProviderContract.birds_table.CONTENT_URI,
-                    null,
-                    null, //"datetime between ? and ?",
-                    null, //new String[] {"04-01-2016 22:33:00", "04-17-2016 23:59:59"},
-                    "commonName ASC"
-            );
-            Log.d("TAG1", DatabaseUtils.dumpCursorToString(cursorAll));
-
-
-
-            DistinctReportCursorAdapter distinctAdapter = new DistinctReportCursorAdapter(getActivity(), cursorToday);
+            distinctAdapter = new DistinctReportCursorAdapter(getActivity(), null);
             lstvwdistinctResults.setAdapter(distinctAdapter);
             titledistinctResults.setText(period);
-
+            getLoaderManager().initLoader(0, null, this);
 
         }
+
+        lstvwdistinctResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                Cursor distinctCursor = distinctAdapter.getCursor();
+                if (distinctCursor != null && distinctCursor.moveToPosition(position)) {
+                    String speciesCommonName = distinctCursor.getString(0);
+                            mCallback.OnSpeciesSelected(speciesCommonName, mTwoPane);
+                }
+            }
+        });
+
         return rootView;
     }
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        return new CursorLoader(
+                getActivity(),
+                ProviderContract.birds_table.CONTENT_URI_GROUPBY,
+                new String[]{"commonName as _id, COUNT(*) as birdCount"},
+                "datetime > ?",
+                new String[] {Utilities.getBeginTime(period)},
+                "commonName ASC"
+        );
+    }
+
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        distinctAdapter.swapCursor(data);
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        distinctAdapter.swapCursor(null);
+    }
+
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception.
+        try {
+            mCallback = (OnSpeciesSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnSpeciesSelectedListener");
+        }
+    }
+
+
 }

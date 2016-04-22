@@ -1,13 +1,16 @@
 package com.example.rmendoza.birderjourney_gce;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
-public class DistinctReportActivity extends AppCompatActivity {
+public class DistinctReportActivity extends AppCompatActivity implements  DistinctReportActivityFragment.OnSpeciesSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,30 @@ public class DistinctReportActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });*/
+    }
+
+    public void OnSpeciesSelected(String speciesCommonName, boolean mTwoPane) {
+        if (mTwoPane) {
+//            Bundle args = new Bundle();
+//            args.putStringArray("IdAndNameArray", idAndName);
+//            args.putBoolean("mTwoPane",mTwoPane);
+//
+//            ArtistTopTenActivityFragment fragment = new ArtistTopTenActivityFragment();
+//            fragment.setArguments(args);
+//
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.artist_top_ten_container, fragment)
+//                    .commit();
+        } else {
+
+            Context context = getApplicationContext();
+            Toast.makeText(context, "Going to detail report for" + speciesCommonName, Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(this, DetailReportActivity.class);
+            intent.putExtra("speciesCommonName", speciesCommonName);
+            intent.putExtra("mTwoPane", mTwoPane);
+            startActivity(intent);
+        }
     }
 
 }
