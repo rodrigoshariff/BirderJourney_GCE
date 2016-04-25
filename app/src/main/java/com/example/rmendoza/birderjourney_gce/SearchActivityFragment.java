@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.example.DBHelper_Java;
 import com.example.BirdArrayItem;
 import com.example.rmendoza.myapplication.gce_admin.myApi.MyApi;
 import com.google.api.client.extensions.android.http.AndroidHttp;

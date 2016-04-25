@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.BirdArrayItem;
-import com.example.DBHelper_Java;
 import com.example.rmendoza.birderjourney_gce.data.ProviderContract;
 
 import java.util.ArrayList;
