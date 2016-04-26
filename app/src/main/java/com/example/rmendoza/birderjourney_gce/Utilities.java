@@ -31,6 +31,10 @@ public class Utilities {
                 calendar.set(Calendar.DAY_OF_YEAR, 1);
                 break;
             }
+            case "ever": {
+                calendar.set(Calendar.YEAR, 1900);
+                break;
+            }
         }
 
         SimpleDateFormat dt = new SimpleDateFormat("MM-dd-yyy");
@@ -49,8 +53,8 @@ public class Utilities {
             e.printStackTrace();
         }
         return timeOnly;
-
     }
+
 
 
     public static String getDayOnly(String datetime) {
@@ -64,8 +68,41 @@ public class Utilities {
             e.printStackTrace();
         }
         return dayOnly;
-
     }
+
+
+
+    public static String getPeriodName(String period) {
+        String PeriodName = "";
+        switch (period) {
+            //as you go.
+            case "today": {
+                PeriodName = "Today";
+                break;
+            }
+            case "week": {
+                PeriodName = "This Week";
+                break;
+            }
+            case "month": {
+                PeriodName = "This Month";
+                break;
+            }
+            case "year": {
+                PeriodName = "This Year";
+                break;
+            }
+            case "ever": {
+                PeriodName = "Ever";
+                break;
+            }
+        }
+        return PeriodName;
+    }
+
+
+
+
 
 
 

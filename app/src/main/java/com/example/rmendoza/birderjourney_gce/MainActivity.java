@@ -30,6 +30,17 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
+        if (findViewById(R.id.bird_detail_container) != null) {
+            mTwoPane = true;
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.bird_detail_container, new SearchActivityFragment(), "TTTAG")
+                        .commit();
+            }
+        } else {
+            mTwoPane = false;
+        }
+
     }
 
     public void onBirdSelected(BirdArrayItem birdItemSelected) {
@@ -79,16 +90,16 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
 
     public void OnSpeciesSelected(String speciesCommonName, String period, boolean mTwoPane) {
         if (mTwoPane) {
-//            Bundle args = new Bundle();
-//            args.putStringArray("IdAndNameArray", idAndName);
-//            args.putBoolean("mTwoPane",mTwoPane);
-//
-//            ArtistTopTenActivityFragment fragment = new ArtistTopTenActivityFragment();
-//            fragment.setArguments(args);
-//
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.artist_top_ten_container, fragment)
-//                    .commit();
+            Bundle args = new Bundle();
+            args.putString("speciesCommonName", speciesCommonName);
+            args.putBoolean("mTwoPane",mTwoPane);
+
+            DetailReportActivityFragment fragment = new DetailReportActivityFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.bird_detail_container, fragment)
+                    .commit();
         } else {
 
             Context context = getApplicationContext();
@@ -122,20 +133,16 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         }
         if (id == R.id.today){
             if (mTwoPane) {
-                // In two-pane mode, show the detail view in this activity by
-                // adding or replacing the detail fragment using a
-                // fragment transaction.
+                Bundle args = new Bundle();
+                args.putString("Period", "today");
+                args.putBoolean("mTwoPane",mTwoPane);
 
-//                Bundle args = new Bundle();
-//                args.putStringArray("IdAndNameArray", idAndName);
-//                args.putBoolean("mTwoPane",mTwoPane);
-//
-//                ArtistTopTenActivityFragment fragment = new ArtistTopTenActivityFragment();
-//                fragment.setArguments(args);
-//
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.artist_top_ten_container, fragment)
-//                        .commit();
+                DistinctReportActivityFragment fragment = new DistinctReportActivityFragment();
+                fragment.setArguments(args);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.bird_detail_container, fragment)
+                        .commit();
             } else {
                 Intent intent = new Intent(this, DistinctReportActivity.class);
                 intent.putExtra("Period", "today");
@@ -149,20 +156,16 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         }
         if (id == R.id.week){
             if (mTwoPane) {
-                // In two-pane mode, show the detail view in this activity by
-                // adding or replacing the detail fragment using a
-                // fragment transaction.
+                Bundle args = new Bundle();
+                args.putString("Period", "week");
+                args.putBoolean("mTwoPane",mTwoPane);
 
-//                Bundle args = new Bundle();
-//                args.putStringArray("IdAndNameArray", idAndName);
-//                args.putBoolean("mTwoPane",mTwoPane);
-//
-//                ArtistTopTenActivityFragment fragment = new ArtistTopTenActivityFragment();
-//                fragment.setArguments(args);
-//
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.artist_top_ten_container, fragment)
-//                        .commit();
+                DistinctReportActivityFragment fragment = new DistinctReportActivityFragment();
+                fragment.setArguments(args);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.bird_detail_container, fragment)
+                        .commit();
             } else {
                 Intent intent = new Intent(this, DistinctReportActivity.class);
                 intent.putExtra("Period", "week");
@@ -175,20 +178,16 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         }
         if (id == R.id.month){
             if (mTwoPane) {
-                // In two-pane mode, show the detail view in this activity by
-                // adding or replacing the detail fragment using a
-                // fragment transaction.
+                Bundle args = new Bundle();
+                args.putString("Period", "month");
+                args.putBoolean("mTwoPane",mTwoPane);
 
-//                Bundle args = new Bundle();
-//                args.putStringArray("IdAndNameArray", idAndName);
-//                args.putBoolean("mTwoPane",mTwoPane);
-//
-//                ArtistTopTenActivityFragment fragment = new ArtistTopTenActivityFragment();
-//                fragment.setArguments(args);
-//
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.artist_top_ten_container, fragment)
-//                        .commit();
+                DistinctReportActivityFragment fragment = new DistinctReportActivityFragment();
+                fragment.setArguments(args);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.bird_detail_container, fragment)
+                        .commit();
             } else {
                 Intent intent = new Intent(this, DistinctReportActivity.class);
                 intent.putExtra("Period", "month");
@@ -201,20 +200,16 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         }
         if (id == R.id.year){
             if (mTwoPane) {
-                // In two-pane mode, show the detail view in this activity by
-                // adding or replacing the detail fragment using a
-                // fragment transaction.
+                Bundle args = new Bundle();
+                args.putString("Period", "year");
+                args.putBoolean("mTwoPane",mTwoPane);
 
-//                Bundle args = new Bundle();
-//                args.putStringArray("IdAndNameArray", idAndName);
-//                args.putBoolean("mTwoPane",mTwoPane);
-//
-//                ArtistTopTenActivityFragment fragment = new ArtistTopTenActivityFragment();
-//                fragment.setArguments(args);
-//
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.artist_top_ten_container, fragment)
-//                        .commit();
+                DistinctReportActivityFragment fragment = new DistinctReportActivityFragment();
+                fragment.setArguments(args);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.bird_detail_container, fragment)
+                        .commit();
             } else {
                 Intent intent = new Intent(this, DistinctReportActivity.class);
                 intent.putExtra("Period", "year");
@@ -227,20 +222,16 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         }
         if (id == R.id.ever){
             if (mTwoPane) {
-                // In two-pane mode, show the detail view in this activity by
-                // adding or replacing the detail fragment using a
-                // fragment transaction.
+                Bundle args = new Bundle();
+                args.putString("Period", "ever");
+                args.putBoolean("mTwoPane",mTwoPane);
 
-//                Bundle args = new Bundle();
-//                args.putStringArray("IdAndNameArray", idAndName);
-//                args.putBoolean("mTwoPane",mTwoPane);
-//
-//                ArtistTopTenActivityFragment fragment = new ArtistTopTenActivityFragment();
-//                fragment.setArguments(args);
-//
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.artist_top_ten_container, fragment)
-//                        .commit();
+                DistinctReportActivityFragment fragment = new DistinctReportActivityFragment();
+                fragment.setArguments(args);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.bird_detail_container, fragment)
+                        .commit();
             } else {
                 Intent intent = new Intent(this, DistinctReportActivity.class);
                 intent.putExtra("Period", "ever");

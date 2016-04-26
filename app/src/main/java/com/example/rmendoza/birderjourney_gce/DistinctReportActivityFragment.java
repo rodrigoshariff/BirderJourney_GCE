@@ -19,7 +19,7 @@ import com.example.rmendoza.birderjourney_gce.data.ProviderContract;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DistinctReportActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class DistinctReportActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public DistinctReportActivityFragment() {
     }
@@ -52,11 +52,10 @@ public class DistinctReportActivityFragment extends Fragment implements LoaderMa
             period = arguments.getString("Period");
             mTwoPane = arguments.getBoolean("mTwoPane");
 
-//            Log.d("TAG", DatabaseUtils.dumpCursorToString(cursorToday));
-
+            refreshTitle();
             distinctAdapter = new DistinctReportCursorAdapter(getActivity(), null);
             lstvwdistinctResults.setAdapter(distinctAdapter);
-            titledistinctResults.setText(period);
+
             getLoaderManager().initLoader(0, null, this);
 
         }
@@ -69,12 +68,25 @@ public class DistinctReportActivityFragment extends Fragment implements LoaderMa
                 Cursor distinctCursor = distinctAdapter.getCursor();
                 if (distinctCursor != null && distinctCursor.moveToPosition(position)) {
                     String speciesCommonName = distinctCursor.getString(0);
-                            mCallback.OnSpeciesSelected(speciesCommonName, period, mTwoPane);
+                    mCallback.OnSpeciesSelected(speciesCommonName, period, mTwoPane);
                 }
             }
         });
 
         return rootView;
+    }
+
+    public void refreshTitle(){
+        Cursor cursorSpeciesCount = getActivity().getContentResolver().query(
+                ProviderContract.birds_table.CONTENT_URI,
+                new String[]{"COUNT(distinct commonName) as speciesCount"},
+                "datetime > ?",
+                new String[]{Utilities.getBeginTime(period)},
+                null
+        );
+        cursorSpeciesCount.moveToFirst();
+        String speciesCount = cursorSpeciesCount.getString(cursorSpeciesCount.getColumnIndexOrThrow("speciesCount"));
+        titledistinctResults.setText(Utilities.getPeriodName(period) + " (" + speciesCount + " Species)");
     }
 
 
@@ -86,7 +98,7 @@ public class DistinctReportActivityFragment extends Fragment implements LoaderMa
                 ProviderContract.birds_table.CONTENT_URI_GROUPBY,
                 new String[]{"commonName as _id, COUNT(*) as birdCount"},
                 "datetime > ?",
-                new String[] {Utilities.getBeginTime(period)},
+                new String[]{Utilities.getBeginTime(period)},
                 "commonName ASC"
         );
     }
@@ -122,5 +134,6 @@ public class DistinctReportActivityFragment extends Fragment implements LoaderMa
     public void onResume() {
         super.onResume();
         getLoaderManager().restartLoader(0, null, this);
+        refreshTitle();
     }
 }
