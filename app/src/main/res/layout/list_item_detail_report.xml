@@ -130,14 +130,15 @@
                 android:layout_weight="1"
                 android:layout_height="25dp"
                 android:layout_gravity="right"
-                android:background="@android:color/transparent"
+                android:background="@drawable/edittext_border"
                 android:text="SHARE"
                 android:textColor="?attr/colorAccent"
                 android:textStyle="bold"
                 android:typeface="sans"
                 android:clickable="true"
                 android:enabled="true"
-                android:focusable="false"/>
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp" />
 
             <Button
                 android:id="@+id/button_map"
@@ -145,14 +146,15 @@
                 android:layout_weight="1"
                 android:layout_height="25dp"
                 android:layout_gravity="right"
-                android:background="@android:color/transparent"
+                android:background="@drawable/edittext_border"
                 android:text="MAP"
                 android:textColor="?attr/colorAccent"
                 android:textStyle="bold"
                 android:typeface="sans"
                 android:enabled="true"
                 android:clickable="true"
-                android:focusable="false"/>
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp" />
 
             <Button
                 android:id="@+id/button_delete"
@@ -160,15 +162,15 @@
                 android:layout_width="0dp"
                 android:layout_height="25dp"
                 android:layout_gravity="right"
-                android:background="@android:color/transparent"
+                android:background="@drawable/edittext_border"
                 android:text="DELETE"
                 android:textColor="?attr/colorAccent"
                 android:textStyle="bold"
                 android:typeface="sans"
                 android:clickable="true"
                 android:enabled="true"
-                android:focusable="false"
-                android:onClick="OnClickDeleteButton" />
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp" />
         </LinearLayout>
 
     </LinearLayout>

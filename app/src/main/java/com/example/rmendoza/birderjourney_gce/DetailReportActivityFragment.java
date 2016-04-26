@@ -42,6 +42,10 @@ public class DetailReportActivityFragment extends Fragment  implements LoaderMan
 
         final View rootView = inflater.inflate(R.layout.fragment_detail_report, container, false);
         lstvwdetailResults = (ListView) rootView.findViewById(R.id.detailResults);
+        lstvwdetailResults.setItemsCanFocus(true);
+        lstvwdetailResults.setFocusable(false);
+        lstvwdetailResults.setFocusableInTouchMode(false);
+        lstvwdetailResults.setClickable(false);
         titledetailResults = (TextView) rootView.findViewById(R.id.detailReportTitle);
 
         Bundle arguments = getArguments();

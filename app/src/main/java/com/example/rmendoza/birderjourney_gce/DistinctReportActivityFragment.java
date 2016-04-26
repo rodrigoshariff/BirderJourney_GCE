@@ -118,5 +118,9 @@ public class DistinctReportActivityFragment extends Fragment implements LoaderMa
         }
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        getLoaderManager().restartLoader(0, null, this);
+    }
 }

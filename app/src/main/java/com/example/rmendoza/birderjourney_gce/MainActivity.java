@@ -30,23 +30,6 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-
-//        mydb = new DBHelper(this);
-//        mydb.truncateBirdsTable();
-//        if (mydb.getRecordCount() == 0)
-//        {
-//            LoadDataBirdsTable(mydb);
-//        }
-
-/*        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
-
     }
 
     public void onBirdSelected(BirdArrayItem birdItemSelected) {
@@ -55,16 +38,26 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
             // adding or replacing the detail fragment using a
             // fragment transaction.
 
-//            Bundle args = new Bundle();
-//            args.putStringArray("IdAndNameArray", birdItemSelected);
-//            args.putBoolean("mTwoPane",mTwoPane);
+            Bundle args = new Bundle();
+            args.putString("sisrecID", birdItemSelected.getSISRecID());
+            args.putString("commonName", birdItemSelected.getCommonName());
+            args.putString("scientificName", birdItemSelected.getScientificName());
+            args.putString("fullName", birdItemSelected.getFullName());
+            args.putString("family", birdItemSelected.getFamily());
+            args.putString("order", birdItemSelected.getOrder());
+            args.putString("na_Occurrence", birdItemSelected.getNA_Occurrence());
+            args.putString("description", birdItemSelected.getDescription());
+            args.putString("iucn_Category2014", birdItemSelected.getIUCN_Category2014());
+            args.putString("imageID", birdItemSelected.getImageID());
+            args.putString("imageFileName", birdItemSelected.getImageFileName());
 
-//            ArtistTopTenActivityFragment fragment = new ArtistTopTenActivityFragment();
-//            fragment.setArguments(args);
-//
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.artist_top_ten_container, fragment)
-//                    .commit();
+            BirdDetailActivityFragment fragment = new BirdDetailActivityFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.bird_detail_container, fragment)
+                    .commit();
+
         } else {
             Intent intent = new Intent(this, BirdDetailActivity.class);
 

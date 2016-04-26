@@ -57,7 +57,6 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
     Location mCurrentLocation;
     LocationRequest mLocationRequest;
     private static final int REQUEST_FINE_LOCATION = 0;
-
     String nearcity = "unknown";
 
 
