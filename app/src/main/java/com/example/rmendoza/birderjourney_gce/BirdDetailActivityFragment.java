@@ -92,8 +92,8 @@ public class BirdDetailActivityFragment extends Fragment implements SaveDialogFr
                 public void onClick(View v) {
                     //startIntentService();
                     FragmentManager fragmentManager = getFragmentManager();
-                    DialogFragment SaveDialogFragment = new SaveDialogFragment();
-                    SaveDialogFragment.show(fragmentManager, "SaveDialog");
+                    SaveDialogFragment saveDialogFragment = new SaveDialogFragment();
+                    saveDialogFragment.show(fragmentManager, "SaveDialog");
 
                     // Context context = getApplicationContext();
                     // Toast.makeText(context, "Start dialog to log observation", Toast.LENGTH_SHORT).show();

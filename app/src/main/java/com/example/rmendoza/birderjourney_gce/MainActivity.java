@@ -1,11 +1,13 @@
 package com.example.rmendoza.birderjourney_gce;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,9 +18,13 @@ import android.widget.Toast;
 import com.example.BirdArrayItem;
 import com.example.rmendoza.birderjourney_gce.data.ProviderContract;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements SearchActivityFragment.OnBirdSelectedListener,  DistinctReportActivityFragment.OnSpeciesSelectedListener  {
+public class MainActivity extends AppCompatActivity implements SearchActivityFragment.OnBirdSelectedListener,
+        DistinctReportActivityFragment.OnSpeciesSelectedListener, SaveDialogFragment.SaveDialogListener  {
 
     private boolean mTwoPane;
 
@@ -33,9 +39,9 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         if (findViewById(R.id.bird_detail_container) != null) {
             mTwoPane = true;
             if (savedInstanceState == null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.bird_detail_container, new SearchActivityFragment(), "TTTAG")
-                        .commit();
+//                getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.bird_detail_container, new SearchActivityFragment(), "TTTAG")
+//                        .commit();
             }
         } else {
             mTwoPane = false;
@@ -244,6 +250,37 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onDialogSaveClick(DialogFragment dialog, String note) {
+
+        DateFormat df = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+
+        birdItemSelected.getSISRecID());
+        intent.putExtra("commonName", birdItemSelected.getCommonName());
+        intent.putExtra("scientificName", birdItemSelected.getScientificName());
+        intent.putExtra("fullName", birdItemSelected.getFullName());
+        intent.putExtra("family", birdItemSelected.getFamily());
+        intent.putExtra("order", birdItemSelected.getOrder());
+        intent.putExtra("na_Occurrence", birdItemSelected.getNA_Occurrence());
+        intent.putExtra("description", birdItemSelected.getDescription());
+        intent.putExtra("iucn_Category2014", birdItemSelected.getIUCN_Category2014());
+        intent.putExtra("imageID", birdItemSelected.getImageID());
+        intent.putExtra("imageFileName", birdItemSelected.getImageFileName());
+
+
+        ContentValues values = new ContentValues();
+        values.put(ProviderContract.birds_table.SISRECID_COL, sisrecID);
+        values.put(ProviderContract.birds_table.COMMONNAME_COL, commonName);
+        values.put(ProviderContract.birds_table.DATETIME_COL, df.format(cal.getTime()));
+        values.put(ProviderContract.birds_table.LOCATION_COL, nearcity);
+        values.put(ProviderContract.birds_table.LAT_COL, currentLat);
+        values.put(ProviderContract.birds_table.LONG_COL, currentLong);
+        values.put(ProviderContract.birds_table.NOTE_COL, note);
+        getContentResolver().insert(ProviderContract.birds_table.CONTENT_URI, values);
+        Toast.makeText(this, "Observation saved. Note: " + note, Toast.LENGTH_SHORT).show();
+
     }
 
 }
