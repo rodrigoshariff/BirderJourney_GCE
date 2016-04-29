@@ -33,13 +33,14 @@
         tools:context=".SearchActivityFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="1.2"
         tools:layout="@layout/fragment_main" />
 
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
-        android:background="@android:color/darker_gray"/>
+        android:background="@android:color/darker_gray"
+        android:layout_marginTop="64dp"/>
 
 
     <FrameLayout

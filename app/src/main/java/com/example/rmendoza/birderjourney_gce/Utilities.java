@@ -33,6 +33,7 @@ public class Utilities {
             }
             case "ever": {
                 calendar.set(Calendar.YEAR, 1900);
+                calendar.set(Calendar.DAY_OF_YEAR, 1);
                 break;
             }
         }

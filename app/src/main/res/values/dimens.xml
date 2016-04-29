@@ -5,7 +5,7 @@
     <dimen name="SearchTextBox_margin">64dp</dimen>
     <dimen name="detail_backdrop_height">463dp</dimen>
     <dimen name="card_margin">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_margin">32dp</dimen>
     <dimen name="list_item_avatar_height">90dp</dimen>
     <dimen name="list_item_avatar_width">80dp</dimen>
     <dimen name="list_item_title_text_size">22sp</dimen>

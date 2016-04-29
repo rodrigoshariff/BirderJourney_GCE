@@ -24,9 +24,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements SearchActivityFragment.OnBirdSelectedListener,
-        DistinctReportActivityFragment.OnSpeciesSelectedListener, SaveDialogFragment.SaveDialogListener  {
+        DistinctReportActivityFragment.OnSpeciesSelectedListener, SaveDialogFragment.SaveDialogListener,
+BirdDetailActivityFragment.OnFabLogListener{
 
     private boolean mTwoPane;
+    String currentLatMain = "";
+    String currentLongMain = "";
+    String nearcityMain = "";
+    String sisrecIDMain = "";
+    String commonNameMain = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
+
+            sisrecIDMain =  birdItemSelected.getSISRecID();
+            commonNameMain =  birdItemSelected.getCommonName();
 
             Bundle args = new Bundle();
             args.putString("sisrecID", birdItemSelected.getSISRecID());
@@ -96,8 +105,13 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
 
     public void OnSpeciesSelected(String speciesCommonName, String period, boolean mTwoPane) {
         if (mTwoPane) {
+
+            Context context = getApplicationContext();
+            Toast.makeText(context, "Going to detail report TABLET for" + speciesCommonName, Toast.LENGTH_SHORT).show();
+
             Bundle args = new Bundle();
             args.putString("speciesCommonName", speciesCommonName);
+            args.putString("period", period);
             args.putBoolean("mTwoPane",mTwoPane);
 
             DetailReportActivityFragment fragment = new DetailReportActivityFragment();
@@ -113,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
 
             Intent intent = new Intent(this, DetailReportActivity.class);
             intent.putExtra("speciesCommonName", speciesCommonName);
+            intent.putExtra("period", period);
             intent.putExtra("mTwoPane",mTwoPane);
             startActivity(intent);
         }
@@ -257,29 +272,25 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         DateFormat df = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();
 
-        birdItemSelected.getSISRecID());
-        intent.putExtra("commonName", birdItemSelected.getCommonName());
-        intent.putExtra("scientificName", birdItemSelected.getScientificName());
-        intent.putExtra("fullName", birdItemSelected.getFullName());
-        intent.putExtra("family", birdItemSelected.getFamily());
-        intent.putExtra("order", birdItemSelected.getOrder());
-        intent.putExtra("na_Occurrence", birdItemSelected.getNA_Occurrence());
-        intent.putExtra("description", birdItemSelected.getDescription());
-        intent.putExtra("iucn_Category2014", birdItemSelected.getIUCN_Category2014());
-        intent.putExtra("imageID", birdItemSelected.getImageID());
-        intent.putExtra("imageFileName", birdItemSelected.getImageFileName());
-
-
         ContentValues values = new ContentValues();
-        values.put(ProviderContract.birds_table.SISRECID_COL, sisrecID);
-        values.put(ProviderContract.birds_table.COMMONNAME_COL, commonName);
+        values.put(ProviderContract.birds_table.SISRECID_COL, sisrecIDMain);
+        values.put(ProviderContract.birds_table.COMMONNAME_COL, commonNameMain);
         values.put(ProviderContract.birds_table.DATETIME_COL, df.format(cal.getTime()));
-        values.put(ProviderContract.birds_table.LOCATION_COL, nearcity);
-        values.put(ProviderContract.birds_table.LAT_COL, currentLat);
-        values.put(ProviderContract.birds_table.LONG_COL, currentLong);
+        values.put(ProviderContract.birds_table.LOCATION_COL, nearcityMain);
+        values.put(ProviderContract.birds_table.LAT_COL, currentLatMain);
+        values.put(ProviderContract.birds_table.LONG_COL, currentLongMain);
         values.put(ProviderContract.birds_table.NOTE_COL, note);
         getContentResolver().insert(ProviderContract.birds_table.CONTENT_URI, values);
         Toast.makeText(this, "Observation saved. Note: " + note, Toast.LENGTH_SHORT).show();
+
+    }
+
+
+    public void OnFabLog(String currentLat, String currentLong, String nearcity){
+
+        currentLatMain = currentLat;
+        currentLongMain = currentLong;
+        nearcityMain = nearcity;
 
     }
 

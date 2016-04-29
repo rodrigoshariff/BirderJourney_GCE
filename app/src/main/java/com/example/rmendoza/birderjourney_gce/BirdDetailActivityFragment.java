@@ -1,5 +1,6 @@
 package com.example.rmendoza.birderjourney_gce;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
@@ -47,6 +48,17 @@ public class BirdDetailActivityFragment extends Fragment implements SaveDialogFr
     public BirdDetailActivityFragment() {
     }
 
+
+    OnFabLogListener mCallback;
+
+    // The container Activity must implement this interface so the frag can deliver messages
+    public interface OnFabLogListener {
+
+        public void OnFabLog(String currentLat, String currentLong, String nearcity);
+    }
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -91,9 +103,13 @@ public class BirdDetailActivityFragment extends Fragment implements SaveDialogFr
                 @Override
                 public void onClick(View v) {
                     //startIntentService();
+                    mCallback.OnFabLog(currentLat, currentLong, nearcity);
                     FragmentManager fragmentManager = getFragmentManager();
                     SaveDialogFragment saveDialogFragment = new SaveDialogFragment();
+                    //saveDialogFragment.setTargetFragment(BirdDetailActivityFragment.this, 1);
                     saveDialogFragment.show(fragmentManager, "SaveDialog");
+
+
 
                     // Context context = getApplicationContext();
                     // Toast.makeText(context, "Start dialog to log observation", Toast.LENGTH_SHORT).show();
@@ -105,6 +121,19 @@ public class BirdDetailActivityFragment extends Fragment implements SaveDialogFr
         return rootView;
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception.
+        try {
+            mCallback = (OnFabLogListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnSpeciesSelectedListener");
+        }
+    }
 
     public void onDialogSaveClick(DialogFragment dialog, String note) {
 
