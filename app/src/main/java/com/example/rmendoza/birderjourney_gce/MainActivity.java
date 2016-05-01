@@ -24,8 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements SearchActivityFragment.OnBirdSelectedListener,
-        DistinctReportActivityFragment.OnSpeciesSelectedListener, SaveDialogFragment.SaveDialogListener,
-BirdDetailActivityFragment.OnFabLogListener{
+        DistinctReportActivityFragment.OnSpeciesSelectedListener, SaveDialogFragment.SaveDialogListener{
 
     private boolean mTwoPane;
     String currentLatMain = "";
@@ -267,18 +266,18 @@ BirdDetailActivityFragment.OnFabLogListener{
         return super.onOptionsItemSelected(item);
     }
 
-    public void onDialogSaveClick(DialogFragment dialog, String note) {
+    public void onDialogSaveClick(DialogFragment dialog, String note, String sisrecID, String commonName, String currentLat, String currentLong, String nearcity) {
 
         DateFormat df = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();
 
         ContentValues values = new ContentValues();
-        values.put(ProviderContract.birds_table.SISRECID_COL, sisrecIDMain);
-        values.put(ProviderContract.birds_table.COMMONNAME_COL, commonNameMain);
+        values.put(ProviderContract.birds_table.SISRECID_COL, sisrecID);
+        values.put(ProviderContract.birds_table.COMMONNAME_COL, commonName);
         values.put(ProviderContract.birds_table.DATETIME_COL, df.format(cal.getTime()));
-        values.put(ProviderContract.birds_table.LOCATION_COL, nearcityMain);
-        values.put(ProviderContract.birds_table.LAT_COL, currentLatMain);
-        values.put(ProviderContract.birds_table.LONG_COL, currentLongMain);
+        values.put(ProviderContract.birds_table.LOCATION_COL, nearcity);
+        values.put(ProviderContract.birds_table.LAT_COL, currentLat);
+        values.put(ProviderContract.birds_table.LONG_COL, currentLong);
         values.put(ProviderContract.birds_table.NOTE_COL, note);
         getContentResolver().insert(ProviderContract.birds_table.CONTENT_URI, values);
         Toast.makeText(this, "Observation saved. Note: " + note, Toast.LENGTH_SHORT).show();

@@ -271,7 +271,7 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
     }
 
 
-    public void onDialogSaveClick(DialogFragment dialog, String note) {
+    public void onDialogSaveClick(DialogFragment dialog, String note, String sisrecIDd, String commonNamed, String currentLatd, String currentLongd, String nearcityd) {
 
         DateFormat df = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();

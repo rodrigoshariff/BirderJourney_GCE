@@ -19,8 +19,14 @@ import java.util.logging.Handler;
 
 public class SaveDialogFragment extends DialogFragment {
 
+    String sisrecID = "";
+    String commonName = "";
+    String currentLat = "";
+    String currentLong = "";
+    String nearcity = "unknown";
+
     public interface SaveDialogListener {
-        public void onDialogSaveClick(DialogFragment dialog, String note);
+        public void onDialogSaveClick(DialogFragment dialog, String note, String sisrecID, String commonName, String currentLat, String currentLong, String nearcity);
     }
 
     SaveDialogListener mListener;
@@ -39,6 +45,14 @@ public class SaveDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            sisrecID = arguments.getString("sisrecID");
+            commonName = arguments.getString("commonName");
+            currentLat = arguments.getString("currentLat");
+            currentLong = arguments.getString("currentLong");
+            nearcity = arguments.getString("nearcity");
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View popupview = inflater.inflate(R.layout.fragment_save_dialog, null);
@@ -49,7 +63,7 @@ public class SaveDialogFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         String note = dialog_note.getText().toString();
-                        mListener.onDialogSaveClick(SaveDialogFragment.this,note);
+                        mListener.onDialogSaveClick(SaveDialogFragment.this,note, sisrecID, commonName, currentLat, currentLong, nearcity);
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
