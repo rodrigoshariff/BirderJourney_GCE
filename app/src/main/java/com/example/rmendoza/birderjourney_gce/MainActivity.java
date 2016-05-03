@@ -24,9 +24,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements SearchActivityFragment.OnBirdSelectedListener,
-        DistinctReportActivityFragment.OnSpeciesSelectedListener, SaveDialogFragment.SaveDialogListener{
+        DistinctReportActivityFragment.OnSpeciesSelectedListener, SaveDialogFragment.SaveDialogListener,
+        DetailReportActivityFragment.OnDeleteItemListener{
 
     private boolean mTwoPane;
+    String period  = "";
     String currentLatMain = "";
     String currentLongMain = "";
     String nearcityMain = "";
@@ -43,13 +45,14 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
 
         if (findViewById(R.id.bird_detail_container) != null) {
             mTwoPane = true;
-            if (savedInstanceState == null) {
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.bird_detail_container, new SearchActivityFragment(), "TTTAG")
-//                        .commit();
-            }
         } else {
             mTwoPane = false;
+        }
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.master_container, new SearchActivityFragment(), "TTTAG")
+                    .commit();
         }
 
     }
@@ -151,7 +154,15 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         if (id == R.id.action_settings) {
             return true;
         }
+
+        if (id == R.id.action_search) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.master_container, new SearchActivityFragment(), "TTTAG")
+                    .commit();
+        }
+
         if (id == R.id.today){
+            period = "today";
             if (mTwoPane) {
                 Bundle args = new Bundle();
                 args.putString("Period", "today");
@@ -161,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
                 fragment.setArguments(args);
 
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.bird_detail_container, fragment)
+                        .replace(R.id.master_container, fragment)
                         .commit();
             } else {
                 Intent intent = new Intent(this, DistinctReportActivity.class);
@@ -175,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
 
         }
         if (id == R.id.week){
+            period = "week";
             if (mTwoPane) {
                 Bundle args = new Bundle();
                 args.putString("Period", "week");
@@ -184,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
                 fragment.setArguments(args);
 
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.bird_detail_container, fragment)
+                        .replace(R.id.master_container, fragment)
                         .commit();
             } else {
                 Intent intent = new Intent(this, DistinctReportActivity.class);
@@ -197,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
             Toast.makeText(context, "Load summary report for this week", Toast.LENGTH_SHORT).show();
         }
         if (id == R.id.month){
+            period = "month";
             if (mTwoPane) {
                 Bundle args = new Bundle();
                 args.putString("Period", "month");
@@ -206,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
                 fragment.setArguments(args);
 
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.bird_detail_container, fragment)
+                        .replace(R.id.master_container, fragment)
                         .commit();
             } else {
                 Intent intent = new Intent(this, DistinctReportActivity.class);
@@ -219,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
             Toast.makeText(context, "Load summary report for current month", Toast.LENGTH_SHORT).show();
         }
         if (id == R.id.year){
+            period = "year";
             if (mTwoPane) {
                 Bundle args = new Bundle();
                 args.putString("Period", "year");
@@ -228,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
                 fragment.setArguments(args);
 
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.bird_detail_container, fragment)
+                        .replace(R.id.master_container, fragment)
                         .commit();
             } else {
                 Intent intent = new Intent(this, DistinctReportActivity.class);
@@ -241,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
             Toast.makeText(context, "Load summary report for current year", Toast.LENGTH_SHORT).show();
         }
         if (id == R.id.ever){
+            period = "ever";
             if (mTwoPane) {
                 Bundle args = new Bundle();
                 args.putString("Period", "ever");
@@ -250,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
                 fragment.setArguments(args);
 
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.bird_detail_container, fragment)
+                        .replace(R.id.master_container, fragment)
                         .commit();
             } else {
                 Intent intent = new Intent(this, DistinctReportActivity.class);
@@ -275,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         values.put(ProviderContract.birds_table.SISRECID_COL, sisrecID);
         values.put(ProviderContract.birds_table.COMMONNAME_COL, commonName);
         values.put(ProviderContract.birds_table.DATETIME_COL, df.format(cal.getTime()));
-        values.put(ProviderContract.birds_table.LOCATION_COL, nearcity);
+        values.put(ProviderContract.birds_table.LOCATION_COL, currentLong);
         values.put(ProviderContract.birds_table.LAT_COL, currentLat);
         values.put(ProviderContract.birds_table.LONG_COL, currentLong);
         values.put(ProviderContract.birds_table.NOTE_COL, note);
@@ -291,6 +306,21 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         currentLongMain = currentLong;
         nearcityMain = nearcity;
 
+    }
+
+    public void OnDeleteItem(String periodClicked){
+        if (mTwoPane) {
+            Bundle args = new Bundle();
+            args.putString("Period", periodClicked);
+            args.putBoolean("mTwoPane", mTwoPane);
+
+            DistinctReportActivityFragment fragment = new DistinctReportActivityFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.master_container, fragment)
+                    .commit();
+        }
     }
 
 }

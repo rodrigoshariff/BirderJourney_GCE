@@ -1,12 +1,18 @@
 package com.example.rmendoza.birderjourney_gce;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -130,9 +136,30 @@ public class DistinctReportActivityFragment extends Fragment implements LoaderMa
         }
     }
 
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String message = intent.getStringExtra("message");
+            Log.d("receiver", "Got message: " + message);
+            getLoaderManager().restartLoader(0, null, DistinctReportActivityFragment.this);
+            refreshTitle();
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        // Unregister since the activity is about to be closed.
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter("refresh distinct count"));
         getLoaderManager().restartLoader(0, null, this);
         refreshTitle();
     }

@@ -26,7 +26,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.rmendoza.birderjourney_gce.MainActivity">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<!--    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/fragment_main"
         android:name="com.example.rmendoza.birderjourney_gce.SearchActivityFragment"
@@ -34,7 +34,13 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1.2"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" />-->
+    <FrameLayout
+        android:id="@+id/master_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.15"
+        android:layout_marginTop="64dp" />
 
     <View
         android:layout_width="1dp"

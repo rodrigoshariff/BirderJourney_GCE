@@ -1,5 +1,6 @@
 package com.example.rmendoza.birderjourney_gce;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -34,6 +35,16 @@ public class DetailReportActivityFragment extends Fragment  implements LoaderMan
 
     public DetailReportActivityFragment() {
     }
+
+    OnDeleteItemListener DeleteCallBack;
+
+    // The container Activity must implement this interface so the frag can deliver messages
+    public interface OnDeleteItemListener {
+
+        public void OnDeleteItem(String periodSelected);
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,6 +82,17 @@ public class DetailReportActivityFragment extends Fragment  implements LoaderMan
 
         }
 
+
+        lstvwdetailResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                DeleteCallBack.OnDeleteItem(period);
+
+            }
+        });
+
+
         return rootView;
     }
 
@@ -102,5 +124,18 @@ public class DetailReportActivityFragment extends Fragment  implements LoaderMan
 
 
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception.
+        try {
+            DeleteCallBack = (OnDeleteItemListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnSpeciesSelectedListener");
+        }
+    }
 
 }

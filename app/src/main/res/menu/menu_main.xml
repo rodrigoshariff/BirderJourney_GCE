@@ -10,7 +10,7 @@
     <item
         android:id="@+id/action_history"
         android:orderInCategory="300"
-        android:title="Search"
+        android:title="Report"
         android:icon="@drawable/ic_history_white_24dp"
         app:showAsAction="ifRoom"
         >
@@ -27,4 +27,10 @@
                 android:title="Ever" />
         </menu>
     </item>
+    <item
+        android:id="@+id/action_search"
+        android:orderInCategory="100"
+        android:title="Search"
+        android:icon="@drawable/ic_search_white_24dp"
+        app:showAsAction="ifRoom" />
 </menu>

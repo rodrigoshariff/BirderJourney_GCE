@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,7 +27,9 @@ public class DetailReportCursorAdapter extends CursorAdapter {
             super(context, cursor, 0);
         }
 
-        // The newView method is used to inflate a new view and return it,
+
+
+    // The newView method is used to inflate a new view and return it,
         // you don't bind any data to the view at this point.
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
@@ -77,6 +80,12 @@ public class DetailReportCursorAdapter extends CursorAdapter {
                             public void onClick(DialogInterface dialog, int which) {
                                 context.getContentResolver().delete(ProviderContract.birds_table.buildBirdUri(row_id),"",null);
                                 notifyDataSetChanged();
+                                Intent intent = new Intent("refresh distinct count");
+                                // You can also include some extra data.
+                                intent.putExtra("message", "This is my message!");
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
+
                             }});
                         adb.show();
                     }

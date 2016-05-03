@@ -17,13 +17,22 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/master_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        tools:ignore="MergeRootFrame"/>
+
+
+<!--    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/fragment_main"
         android:name="com.example.rmendoza.birderjourney_gce.SearchActivityFragment"
         tools:context=".SearchActivityFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" />-->
 
 </android.support.design.widget.CoordinatorLayout>

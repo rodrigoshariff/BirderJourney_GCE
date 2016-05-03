@@ -125,7 +125,7 @@ public class BirdDetailActivityFragment extends Fragment implements GoogleApiCli
             fabLog.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startIntentService();
+                    //startIntentService();
                     //mCallback.OnFabLog(currentLat, currentLong, nearcity);
 
                     Bundle arguments = new Bundle();
