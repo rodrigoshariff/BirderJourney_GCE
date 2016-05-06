@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -40,16 +42,18 @@ public class DistinctReportActivityFragment extends Fragment implements LoaderMa
 
 
     String period = "";
+    int currPosition = 0;
     private boolean mTwoPane = false;
     private ListView lstvwdistinctResults = null;
     private TextView titledistinctResults = null;
     public DistinctReportCursorAdapter distinctAdapter;
+    View rootView;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_distinct_report, container, false);
+        rootView = inflater.inflate(R.layout.fragment_distinct_report, container, false);
         lstvwdistinctResults = (ListView) rootView.findViewById(R.id.distinctResults);
         titledistinctResults = (TextView) rootView.findViewById(R.id.distincReportTitle);
 
@@ -71,6 +75,7 @@ public class DistinctReportActivityFragment extends Fragment implements LoaderMa
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
+                currPosition = position;
                 Cursor distinctCursor = distinctAdapter.getCursor();
                 if (distinctCursor != null && distinctCursor.moveToPosition(position)) {
                     String speciesCommonName = distinctCursor.getString(0);
@@ -79,8 +84,12 @@ public class DistinctReportActivityFragment extends Fragment implements LoaderMa
             }
         });
 
+        distinctAdapter.notifyDataSetChanged();
+
         return rootView;
     }
+
+
 
     public void refreshTitle(){
         Cursor cursorSpeciesCount = getActivity().getContentResolver().query(
@@ -93,6 +102,7 @@ public class DistinctReportActivityFragment extends Fragment implements LoaderMa
         cursorSpeciesCount.moveToFirst();
         String speciesCount = cursorSpeciesCount.getString(cursorSpeciesCount.getColumnIndexOrThrow("speciesCount"));
         titledistinctResults.setText(Utilities.getPeriodName(period) + " (" + speciesCount + " Species)");
+
     }
 
 
@@ -107,12 +117,14 @@ public class DistinctReportActivityFragment extends Fragment implements LoaderMa
                 new String[]{Utilities.getBeginTime(period)},
                 "commonName ASC"
         );
+
     }
 
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         distinctAdapter.swapCursor(data);
+
 
     }
 
@@ -145,6 +157,16 @@ public class DistinctReportActivityFragment extends Fragment implements LoaderMa
             Log.d("receiver", "Got message: " + message);
             getLoaderManager().restartLoader(0, null, DistinctReportActivityFragment.this);
             refreshTitle();
+            //lstvwdistinctResults.performItemClick(rootView,0,lstvwdistinctResults.getItemIdAtPosition(0));
+
+            if(mTwoPane) {
+                int position = (currPosition == 0) ? 1 : 0;
+                Cursor distinctCursor = distinctAdapter.getCursor();
+                if (distinctCursor != null && distinctCursor.moveToPosition(position)) {
+                    String speciesCommonName = distinctCursor.getString(0);
+                    mCallback.OnSpeciesSelected(speciesCommonName, period, mTwoPane);
+                }
+            }
         }
     };
 
@@ -161,6 +183,8 @@ public class DistinctReportActivityFragment extends Fragment implements LoaderMa
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
                 new IntentFilter("refresh distinct count"));
         getLoaderManager().restartLoader(0, null, this);
+
         refreshTitle();
+
     }
 }

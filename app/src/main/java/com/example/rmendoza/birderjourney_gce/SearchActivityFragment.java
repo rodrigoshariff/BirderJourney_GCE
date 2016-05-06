@@ -60,6 +60,7 @@ public class SearchActivityFragment extends Fragment {
     ListView searchResults;
     ImageAndTextArrayAdapter mSearchBirdAdapter;
     private boolean mTwoPane;
+    View rootView;
 
     public SearchActivityFragment() {
     }
@@ -67,9 +68,11 @@ public class SearchActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        rootView = inflater.inflate(R.layout.fragment_main, container, false);
         searchResults = (ListView) rootView.findViewById(R.id.searchResults);
         EditText editText = (EditText) rootView.findViewById(R.id.searchText);
+        editText.requestFocus();
+
 
         if (!(savedInstanceState == null)) {
             searchText = savedInstanceState.getString("searchText");
@@ -162,7 +165,9 @@ public class SearchActivityFragment extends Fragment {
         mSearchBirdAdapter = new ImageAndTextArrayAdapter(getActivity(),
                 R.id.list_item_search_bird, GCE_Search);
         searchResults.setAdapter(mSearchBirdAdapter);
-
+        if (mTwoPane) {
+            searchResults.performItemClick(rootView, 0, searchResults.getItemIdAtPosition(0));
+        }
     }
 
 

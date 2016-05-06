@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
@@ -25,10 +26,10 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements SearchActivityFragment.OnBirdSelectedListener,
         DistinctReportActivityFragment.OnSpeciesSelectedListener, SaveDialogFragment.SaveDialogListener,
-        DetailReportActivityFragment.OnDeleteItemListener{
+        DetailReportActivityFragment.OnDeleteItemListener {
 
     private boolean mTwoPane;
-    String period  = "";
+    String period = "";
     String currentLatMain = "";
     String currentLongMain = "";
     String nearcityMain = "";
@@ -45,6 +46,11 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
 
         if (findViewById(R.id.bird_detail_container) != null) {
             mTwoPane = true;
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.bird_detail_container, new PlaceHolderFragment(), "TTTAG")
+                    .addToBackStack(null)
+                    .commit();
+
         } else {
             mTwoPane = false;
         }
@@ -63,8 +69,8 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
             // adding or replacing the detail fragment using a
             // fragment transaction.
 
-            sisrecIDMain =  birdItemSelected.getSISRecID();
-            commonNameMain =  birdItemSelected.getCommonName();
+            sisrecIDMain = birdItemSelected.getSISRecID();
+            commonNameMain = birdItemSelected.getCommonName();
 
             Bundle args = new Bundle();
             args.putString("sisrecID", birdItemSelected.getSISRecID());
@@ -114,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
             Bundle args = new Bundle();
             args.putString("speciesCommonName", speciesCommonName);
             args.putString("period", period);
-            args.putBoolean("mTwoPane",mTwoPane);
+            args.putBoolean("mTwoPane", mTwoPane);
 
             DetailReportActivityFragment fragment = new DetailReportActivityFragment();
             fragment.setArguments(args);
@@ -130,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
             Intent intent = new Intent(this, DetailReportActivity.class);
             intent.putExtra("speciesCommonName", speciesCommonName);
             intent.putExtra("period", period);
-            intent.putExtra("mTwoPane",mTwoPane);
+            intent.putExtra("mTwoPane", mTwoPane);
             startActivity(intent);
         }
     }
@@ -158,124 +164,93 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         if (id == R.id.action_search) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.master_container, new SearchActivityFragment(), "TTTAG")
+                    .addToBackStack(null)
                     .commit();
+
+            if(mTwoPane) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.bird_detail_container, new PlaceHolderFragment(), "TTTAG")
+                        .addToBackStack(null)
+                        .commit();
+            }
+
+            return true;
         }
 
-        if (id == R.id.today){
+        if (id == R.id.action_shareall) {
+            Cursor cursorTest = getContentResolver().query(
+                    ProviderContract.birds_table.CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    "datetime DESC" );
+
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+            intent.putExtra(Intent.EXTRA_TEXT, DatabaseUtils.dumpCursorToString(cursorTest));
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Birder Journey Observations");
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(intent);
+            }
+
+            //Log.d("TAG", DatabaseUtils.dumpCursorToString(cursorTest));
+
+            return true;
+        }
+
+        if (id == R.id.today) {
             period = "today";
-            if (mTwoPane) {
-                Bundle args = new Bundle();
-                args.putString("Period", "today");
-                args.putBoolean("mTwoPane",mTwoPane);
+            if (getFirstBird() == null) {
 
-                DistinctReportActivityFragment fragment = new DistinctReportActivityFragment();
-                fragment.setArguments(args);
-
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.master_container, fragment)
-                        .commit();
-            } else {
-                Intent intent = new Intent(this, DistinctReportActivity.class);
-                intent.putExtra("Period", "today");
-                intent.putExtra("mTwoPane",mTwoPane);
-                startActivity(intent);
+                Context context = getApplicationContext();
+                Toast.makeText(context, "No saved observations yet; Use search", Toast.LENGTH_SHORT).show();
+                return false;
             }
-
-            Context context = getApplicationContext();
-            Toast.makeText(context, "Load summary report for today", Toast.LENGTH_SHORT).show();
-
+            commitDistinctReport();
         }
-        if (id == R.id.week){
+
+        if (id == R.id.week) {
             period = "week";
-            if (mTwoPane) {
-                Bundle args = new Bundle();
-                args.putString("Period", "week");
-                args.putBoolean("mTwoPane",mTwoPane);
+            if (getFirstBird() == null) {
 
-                DistinctReportActivityFragment fragment = new DistinctReportActivityFragment();
-                fragment.setArguments(args);
-
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.master_container, fragment)
-                        .commit();
-            } else {
-                Intent intent = new Intent(this, DistinctReportActivity.class);
-                intent.putExtra("Period", "week");
-                intent.putExtra("mTwoPane",mTwoPane);
-                startActivity(intent);
+                Context context = getApplicationContext();
+                Toast.makeText(context, "No saved observations yet; Use search", Toast.LENGTH_SHORT).show();
+                return false;
             }
-
-            Context context = getApplicationContext();
-            Toast.makeText(context, "Load summary report for this week", Toast.LENGTH_SHORT).show();
+            commitDistinctReport();
         }
-        if (id == R.id.month){
+
+        if (id == R.id.month) {
             period = "month";
-            if (mTwoPane) {
-                Bundle args = new Bundle();
-                args.putString("Period", "month");
-                args.putBoolean("mTwoPane",mTwoPane);
+            if (getFirstBird() == null) {
 
-                DistinctReportActivityFragment fragment = new DistinctReportActivityFragment();
-                fragment.setArguments(args);
-
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.master_container, fragment)
-                        .commit();
-            } else {
-                Intent intent = new Intent(this, DistinctReportActivity.class);
-                intent.putExtra("Period", "month");
-                intent.putExtra("mTwoPane",mTwoPane);
-                startActivity(intent);
+                Context context = getApplicationContext();
+                Toast.makeText(context, "No saved observations yet; Use search", Toast.LENGTH_SHORT).show();
+                return false;
             }
-
-            Context context = getApplicationContext();
-            Toast.makeText(context, "Load summary report for current month", Toast.LENGTH_SHORT).show();
+            commitDistinctReport();
         }
-        if (id == R.id.year){
+
+        if (id == R.id.year) {
             period = "year";
-            if (mTwoPane) {
-                Bundle args = new Bundle();
-                args.putString("Period", "year");
-                args.putBoolean("mTwoPane",mTwoPane);
+            if (getFirstBird() == null) {
 
-                DistinctReportActivityFragment fragment = new DistinctReportActivityFragment();
-                fragment.setArguments(args);
-
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.master_container, fragment)
-                        .commit();
-            } else {
-                Intent intent = new Intent(this, DistinctReportActivity.class);
-                intent.putExtra("Period", "year");
-                intent.putExtra("mTwoPane",mTwoPane);
-                startActivity(intent);
+                Context context = getApplicationContext();
+                Toast.makeText(context, "No saved observations yet; Use search", Toast.LENGTH_SHORT).show();
+                return false;
             }
-
-            Context context = getApplicationContext();
-            Toast.makeText(context, "Load summary report for current year", Toast.LENGTH_SHORT).show();
+            commitDistinctReport();
         }
-        if (id == R.id.ever){
+
+        if (id == R.id.ever) {
             period = "ever";
-            if (mTwoPane) {
-                Bundle args = new Bundle();
-                args.putString("Period", "ever");
-                args.putBoolean("mTwoPane",mTwoPane);
+            if (getFirstBird() == null) {
 
-                DistinctReportActivityFragment fragment = new DistinctReportActivityFragment();
-                fragment.setArguments(args);
-
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.master_container, fragment)
-                        .commit();
-            } else {
-                Intent intent = new Intent(this, DistinctReportActivity.class);
-                intent.putExtra("Period", "ever");
-                intent.putExtra("mTwoPane",mTwoPane);
-                startActivity(intent);
+                Context context = getApplicationContext();
+                Toast.makeText(context, "No saved observations yet; Use search", Toast.LENGTH_SHORT).show();
+                return false;
             }
-
-            Context context = getApplicationContext();
-            Toast.makeText(context, "Load summary report for ever", Toast.LENGTH_SHORT).show();
+            commitDistinctReport();
         }
 
         return super.onOptionsItemSelected(item);
@@ -300,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
     }
 
 
-    public void OnFabLog(String currentLat, String currentLong, String nearcity){
+    public void OnFabLog(String currentLat, String currentLong, String nearcity) {
 
         currentLatMain = currentLat;
         currentLongMain = currentLong;
@@ -308,7 +283,50 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
 
     }
 
-    public void OnDeleteItem(String periodClicked){
+    public void commitDistinctReport() {
+
+        if (mTwoPane) {
+            Bundle args = new Bundle();
+            args.putString("Period", period);
+            args.putBoolean("mTwoPane", mTwoPane);
+
+            DistinctReportActivityFragment fragment = new DistinctReportActivityFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.master_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+
+            OnSpeciesSelected(getFirstBird(), period, mTwoPane);
+
+
+        } else {
+            Intent intent = new Intent(this, DistinctReportActivity.class);
+            intent.putExtra("Period", period);
+            intent.putExtra("mTwoPane", mTwoPane);
+            startActivity(intent);
+        }
+    }
+
+    public String getFirstBird() {
+        Cursor cursorFirstBird = getContentResolver().query(
+                ProviderContract.birds_table.CONTENT_URI,
+                new String[]{"commonName"},
+                "datetime > ?",
+                new String[]{Utilities.getBeginTime(period)},
+                "commonName ASC LIMIT 1"
+        );
+        if (cursorFirstBird.getCount() > 0) {
+            cursorFirstBird.moveToFirst();
+            return cursorFirstBird.getString(cursorFirstBird.getColumnIndexOrThrow("commonName"));
+        } else {
+            return null;
+        }
+    }
+
+
+    public void OnDeleteItem(String periodClicked) {
         if (mTwoPane) {
             Bundle args = new Bundle();
             args.putString("Period", periodClicked);

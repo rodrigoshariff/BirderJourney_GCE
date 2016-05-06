@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-public class DetailReportActivity extends AppCompatActivity {
+public class DetailReportActivity extends AppCompatActivity implements DetailReportActivityFragment.OnDeleteItemListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,5 +35,11 @@ public class DetailReportActivity extends AppCompatActivity {
         }
 
     }
+
+
+    public void OnDeleteItem(String periodClicked) {
+
+    }
+
 
 }

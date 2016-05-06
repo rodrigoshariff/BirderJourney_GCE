@@ -81,10 +81,8 @@ public class DetailReportCursorAdapter extends CursorAdapter {
                                 context.getContentResolver().delete(ProviderContract.birds_table.buildBirdUri(row_id),"",null);
                                 notifyDataSetChanged();
                                 Intent intent = new Intent("refresh distinct count");
-                                // You can also include some extra data.
                                 intent.putExtra("message", "This is my message!");
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-
 
                             }});
                         adb.show();
