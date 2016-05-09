@@ -1,9 +1,13 @@
 package com.example.rmendoza.birderjourney_gce;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -17,12 +21,16 @@ import android.widget.Toast;
 
 import com.example.rmendoza.birderjourney_gce.data.ProviderContract;
 
+import java.util.ArrayList;
+
 
 /**
  * Created by rodrigoshariff on 4/16/2016.
  */
 public class DetailReportCursorAdapter extends CursorAdapter {
 
+    String latitude = "";
+    String longitude = "";
         public DetailReportCursorAdapter(Context context, Cursor cursor) {
             super(context, cursor, 0);
         }
@@ -61,11 +69,15 @@ public class DetailReportCursorAdapter extends CursorAdapter {
             TextView tvNote = (TextView) view.findViewById(R.id.note_text);
             Button btnDelete = (Button) view.findViewById(R.id.button_delete);
             Button btnShare = (Button) view.findViewById(R.id.button_share);
+            Button btnMap = (Button) view.findViewById(R.id.button_map);
 
             tvDay.setText(Utilities.getDayOnly(cursor.getString(cursor.getColumnIndexOrThrow("datetime"))));
             tvTime.setText(Utilities.getTimeOnly(cursor.getString(cursor.getColumnIndexOrThrow("datetime"))));
             tvLocation.setText(cursor.getString(cursor.getColumnIndexOrThrow("location")));
             tvNote.setText(cursor.getString(cursor.getColumnIndexOrThrow("note")));
+
+            latitude = cursor.getString(cursor.getColumnIndexOrThrow("latitude"));
+            longitude = cursor.getString(cursor.getColumnIndexOrThrow("longitude"));
 
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -100,6 +112,24 @@ public class DetailReportCursorAdapter extends CursorAdapter {
                         intent.setType("text/plain");
                         context.startActivity(Intent.createChooser(intent, "" )
                         );
+                    }
+                }
+            });
+
+
+            btnMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (view != null) {
+
+                        Bundle args = new Bundle();
+                        args.putString("Latitude", latitude);
+                        args.putString("Longitude", longitude);
+
+                        FragmentManager fragmentManager = ((Activity)context).getFragmentManager();
+                        DialogMapFragment obsMapFragment = new DialogMapFragment();
+                        obsMapFragment.setArguments(args);
+                        obsMapFragment.show(fragmentManager, "dialog");
                     }
                 }
             });
