@@ -27,7 +27,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC_AJ3NkRS9TI0575fyGjYgH-lPVfjDBkc"/>
+            android:value="AIzaSyAsh-3w19Zaw-MBsmLFz7kqptisFgfQgSM"/>
 
         <activity
             android:name=".MainActivity"
@@ -64,6 +64,7 @@
 
         <activity
             android:name=".DetailReportActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_detail_report"
             android:parentActivityName=".DistinctReportActivity"
             android:theme="@style/AppTheme">

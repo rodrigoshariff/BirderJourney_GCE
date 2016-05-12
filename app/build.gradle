@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'birder'
+            keyPassword 'MatSebRod1'
+            storeFile file("$rootDir/keystore.jks")
+            storePassword 'MatSebRod1'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
-
     defaultConfig {
         applicationId "com.example.rmendoza.birderjourney_gce"
         minSdkVersion 19
@@ -16,6 +23,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
     dexOptions {

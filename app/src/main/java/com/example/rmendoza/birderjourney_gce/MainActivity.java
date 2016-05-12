@@ -1,11 +1,13 @@
 package com.example.rmendoza.birderjourney_gce;
 
+import android.app.ActivityOptions;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
@@ -107,7 +109,15 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
             intent.putExtra("imageID", birdItemSelected.getImageID());
             intent.putExtra("imageFileName", birdItemSelected.getImageFileName());
 
-            startActivity(intent);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                Bundle bundletran = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
+                startActivity(intent, bundletran);
+            }
+            else
+            {
+                startActivity(intent);
+            }
+
         }
     }
 

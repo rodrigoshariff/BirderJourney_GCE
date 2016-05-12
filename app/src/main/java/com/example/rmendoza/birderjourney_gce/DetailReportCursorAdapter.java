@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -122,11 +123,12 @@ public class DetailReportCursorAdapter extends CursorAdapter {
                 public void onClick(View view) {
                     if (view != null) {
 
+                        FragmentActivity activity = (FragmentActivity)(context);
+                        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+
                         Bundle args = new Bundle();
                         args.putString("Latitude", latitude);
                         args.putString("Longitude", longitude);
-
-                        FragmentManager fragmentManager = ((Activity)context).getFragmentManager();
                         DialogMapFragment obsMapFragment = new DialogMapFragment();
                         obsMapFragment.setArguments(args);
                         obsMapFragment.show(fragmentManager, "dialog");

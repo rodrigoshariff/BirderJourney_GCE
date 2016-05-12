@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
 
@@ -7,6 +7,9 @@
         <item name="colorPrimaryDark">#558B2F</item>
         <item name="colorAccent">#795548</item>
         <item name="android:windowBackground">@color/window_background</item>
+        <item name="android:windowExitTransition" tools:targetApi="lollipop">
+            @transition/maintran_exit </item>
+        <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
