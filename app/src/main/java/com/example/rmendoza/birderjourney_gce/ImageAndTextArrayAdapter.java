@@ -54,14 +54,16 @@ public class ImageAndTextArrayAdapter extends ArrayAdapter<BirdArrayItem> {
         String ImageURL = "";
         if (rowItemBird.getImageID().equals("TBD"))
         {
-            ImageURL = "http://vignette2.wikia.nocookie.net/legendmarielu/images/b/b4/No_image_available.jpg/revision/latest?cb=20130511180903";
+            //ImageURL = "http://vignette2.wikia.nocookie.net/legendmarielu/images/b/b4/No_image_available.jpg/revision/latest?cb=20130511180903";
+            holder.imageView.setImageResource(R.drawable.no_image_available);
         }
         else
         {
             ImageURL = "https://rodrigoshariff.smugmug.com/Bird/Birder-Journey/" + rowItemBird.getImageID() + "/0/Th/" + rowItemBird.getImageFileName();
+            Picasso.with(context).load(ImageURL).into(holder.imageView);
         }
 
-        Picasso.with(context).load(ImageURL).into(holder.imageView);
+
 
         return convertView;
     }

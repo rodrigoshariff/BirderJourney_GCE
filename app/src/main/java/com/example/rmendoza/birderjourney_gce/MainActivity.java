@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.example.BirdArrayItem;
@@ -140,14 +141,21 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
                     .commit();
         } else {
 
-            Context context = getApplicationContext();
-            Toast.makeText(context, "Going to detail report for" + speciesCommonName, Toast.LENGTH_SHORT).show();
+//            Context context = getApplicationContext();
+//            Toast.makeText(context, "Going to detail report for" + speciesCommonName, Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(this, DetailReportActivity.class);
             intent.putExtra("speciesCommonName", speciesCommonName);
             intent.putExtra("period", period);
             intent.putExtra("mTwoPane", mTwoPane);
-            startActivity(intent);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                Bundle bundletran = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
+                startActivity(intent, bundletran);
+            }
+            else
+            {
+                startActivity(intent);
+            }
         }
     }
 
@@ -165,6 +173,9 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        in.hideSoftInputFromWindow(SearchActivityFragment.rootView.getWindowToken(), 0);
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
@@ -275,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
         values.put(ProviderContract.birds_table.SISRECID_COL, sisrecID);
         values.put(ProviderContract.birds_table.COMMONNAME_COL, commonName);
         values.put(ProviderContract.birds_table.DATETIME_COL, df.format(cal.getTime()));
-        values.put(ProviderContract.birds_table.LOCATION_COL, currentLong);
+        values.put(ProviderContract.birds_table.LOCATION_COL, nearcity);
         values.put(ProviderContract.birds_table.LAT_COL, currentLat);
         values.put(ProviderContract.birds_table.LONG_COL, currentLong);
         values.put(ProviderContract.birds_table.NOTE_COL, note);
@@ -315,7 +326,14 @@ public class MainActivity extends AppCompatActivity implements SearchActivityFra
             Intent intent = new Intent(this, DistinctReportActivity.class);
             intent.putExtra("Period", period);
             intent.putExtra("mTwoPane", mTwoPane);
-            startActivity(intent);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                Bundle bundletran = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
+                startActivity(intent, bundletran);
+            }
+            else
+            {
+                startActivity(intent);
+            }
         }
     }
 

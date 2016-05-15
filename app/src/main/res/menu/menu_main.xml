@@ -2,17 +2,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.rmendoza.birderjourney_gce.MainActivity">
-    <item
+<!--    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
     <item
         android:id="@+id/action_shareall"
         android:orderInCategory="100"
         android:title="Share All"
         android:icon="@drawable/ic_share_white_24dp"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_history"
         android:orderInCategory="300"

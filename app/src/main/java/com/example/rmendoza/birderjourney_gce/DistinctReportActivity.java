@@ -61,8 +61,8 @@ public class DistinctReportActivity extends AppCompatActivity implements  Distin
 //                    .commit();
         } else {
 
-            Context context = getApplicationContext();
-            Toast.makeText(context, "Going to detail report for" + speciesCommonName, Toast.LENGTH_SHORT).show();
+//            Context context = getApplicationContext();
+//            Toast.makeText(context, "Going to detail report for" + speciesCommonName, Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(this, DetailReportActivity.class);
             intent.putExtra("speciesCommonName", speciesCommonName);

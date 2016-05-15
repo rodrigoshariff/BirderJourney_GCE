@@ -107,7 +107,7 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
             iucn_Category2014 = intent.getStringExtra("iucn_Category2014");
             description = intent.getStringExtra("description");
             if (intent.getStringExtra("imageID").equals("TBD")) {
-                ImageURL = "http://vignette2.wikia.nocookie.net/legendmarielu/images/b/b4/No_image_available.jpg/revision/latest?cb=20130511180903";
+                ImageURL = null;
             } else {
                 ImageURL = "https://rodrigoshariff.smugmug.com/Bird/Birder-Journey/" + intent.getStringExtra("imageID") + "/0/L/" + intent.getStringExtra("imageFileName");
             }
@@ -131,7 +131,13 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
         ViewOrder.setText(order);
         ViewRedListCat.setText(iucn_Category2014);
         ViewDescription.setText(description);
-        Picasso.with(this).load(ImageURL).into(ViewBirdImage);
+        if (ImageURL == null){
+            ViewBirdImage.setImageResource(R.drawable.no_image_available);
+        }
+        else
+        {
+            Picasso.with(this).load(ImageURL).into(ViewBirdImage);
+        }
 
 
         FloatingActionButton fabLog = (FloatingActionButton) findViewById(R.id.fabLog);

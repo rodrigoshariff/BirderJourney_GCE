@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -60,7 +62,7 @@ public class SearchActivityFragment extends Fragment {
     ListView searchResults;
     ImageAndTextArrayAdapter mSearchBirdAdapter;
     private boolean mTwoPane;
-    View rootView;
+    static View rootView;
 
     public SearchActivityFragment() {
     }
@@ -97,6 +99,10 @@ public class SearchActivityFragment extends Fragment {
                         searchText = editText.getText().toString();
                         editText.clearFocus();
 
+                        if (isNetworkAvailable() == false){
+                            Toast.makeText(getActivity(), R.string.network_error, Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
                         new EndpointsAsyncTask1().execute(new Pair<Context, String>(getActivity(), searchText));
 
                         //hide keyboard
@@ -111,7 +117,7 @@ public class SearchActivityFragment extends Fragment {
                                 getSystemService(Context.INPUT_METHOD_SERVICE);
                         in.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 
-                        Toast.makeText(getActivity(), "Please enter part of the name of the bird", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.empty_searchbox, Toast.LENGTH_SHORT).show();
                         searchResults.invalidateViews();
                     }
 
@@ -159,6 +165,13 @@ public class SearchActivityFragment extends Fragment {
         }
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
 
     private void refreshListView() {
 
@@ -201,8 +214,7 @@ public class SearchActivityFragment extends Fragment {
             GCE_Search.clear();
 
             if (result == null || result.size() == 0) {
-
-                Toast.makeText(getActivity(), "Your search did not return any bird", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.search_fail, Toast.LENGTH_SHORT).show();
 
             } else {
 

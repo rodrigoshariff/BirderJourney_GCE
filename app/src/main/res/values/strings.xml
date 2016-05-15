@@ -13,10 +13,32 @@
     <string name="service_not_available">service_not_available</string>
     <string name="invalid_lat_long_used">invalid_lat_long_used</string>
     <string name="no_address_found">no_address_found</string>
-    <string name="address_found">address_found</string>
+    <string name="address_found">Location found</string>
     <string name="delete_observation">Are you sure you want to delete this observation ?</string>
     <string name="placeholder">Use left pane to search for a bird</string>
-
     <string name="title_widget">Birder Journey</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="network_error">Please check Network connection and try again</string>
+    <string name="empty_searchbox">Please enter the name of the bird</string>
+    <string name="search_fail">Your search did not return any bird</string>
+    <string name="search_desc">Enter name of bird</string>
+    <string name="fab_desc">Press to save observation</string>
+    <string name="share_detail_desc">Share this observation</string>
+    <string name="map_detail_desc">Map this observation</string>
+    <string name="delete_detail_desc">Delete this observation</string>
+    <string name="enter_note_desc">Enter a note for this observation</string>
+    <string name="disintct_period_desc">Report time frame</string>
+    <string name="commonname_label">Common Name :</string>
+    <string name="sciname_label">Scientific Name :</string>
+    <string name="family_label">Family :</string>
+    <string name="order_label">Order :</string>
+    <string name="redlist_label">2014 IUCN Red List Category :</string>
+    <string name="desc_label">Description :</string>
+    <string name="day_label">Day :</string>
+    <string name="time_label">Time :</string>
+    <string name="location_label">Location :</string>
+    <string name="note_label">Note :</string>
+    <string name="share_button">SHARE</string>
+    <string name="map_button">MAP</string>
+    <string name="delete_button">DELETE</string>
 </resources>

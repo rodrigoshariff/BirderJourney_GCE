@@ -30,8 +30,6 @@ import java.util.ArrayList;
  */
 public class DetailReportCursorAdapter extends CursorAdapter {
 
-    String latitude = "";
-    String longitude = "";
         public DetailReportCursorAdapter(Context context, Cursor cursor) {
             super(context, cursor, 0);
         }
@@ -77,8 +75,8 @@ public class DetailReportCursorAdapter extends CursorAdapter {
             tvLocation.setText(cursor.getString(cursor.getColumnIndexOrThrow("location")));
             tvNote.setText(cursor.getString(cursor.getColumnIndexOrThrow("note")));
 
-            latitude = cursor.getString(cursor.getColumnIndexOrThrow("latitude"));
-            longitude = cursor.getString(cursor.getColumnIndexOrThrow("longitude"));
+            final String latitude = cursor.getString(cursor.getColumnIndexOrThrow("latitude"));
+            final String longitude = cursor.getString(cursor.getColumnIndexOrThrow("longitude"));
 
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -107,6 +105,8 @@ public class DetailReportCursorAdapter extends CursorAdapter {
                 @Override
                 public void onClick(View view) {
                     if (view != null) {
+
+                        Log.d("SHARELATLONG", Observation);
                         Intent intent = new Intent ();
                         intent.setAction(Intent.ACTION_SEND);
                         intent.putExtra(Intent.EXTRA_TEXT, "Observation from Birder Journey" + Observation );
@@ -126,6 +126,7 @@ public class DetailReportCursorAdapter extends CursorAdapter {
                         FragmentActivity activity = (FragmentActivity)(context);
                         FragmentManager fragmentManager = activity.getSupportFragmentManager();
 
+                        Log.d("MAPLATLONG", latitude + "    " + longitude);
                         Bundle args = new Bundle();
                         args.putString("Latitude", latitude);
                         args.putString("Longitude", longitude);
