@@ -59,7 +59,8 @@ public class ImageAndTextArrayAdapter extends ArrayAdapter<BirdArrayItem> {
         }
         else
         {
-            ImageURL = "https://rodrigoshariff.smugmug.com/Bird/Birder-Journey/" + rowItemBird.getImageID() + "/0/Th/" + rowItemBird.getImageFileName();
+            //ImageURL = "https://rodrigoshariff.smugmug.com/Bird/Birder-Journey/" + rowItemBird.getImageID() + "/0/Th/" + rowItemBird.getImageFileName();
+            ImageURL = "https://photos.smugmug.com/Bird/Birder-Journey/" + rowItemBird.getImageID() + "/0/Th/" + rowItemBird.getImageFileName() + "-Th.jpg";
             Picasso.with(context).load(ImageURL).into(holder.imageView);
         }
 

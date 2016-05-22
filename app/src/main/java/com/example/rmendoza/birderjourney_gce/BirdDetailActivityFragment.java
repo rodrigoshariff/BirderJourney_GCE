@@ -107,7 +107,8 @@ public class BirdDetailActivityFragment extends Fragment implements GoogleApiCli
             if (arguments.getString("imageID").equals("TBD")) {
                 ImageURL = "http://vignette2.wikia.nocookie.net/legendmarielu/images/b/b4/No_image_available.jpg/revision/latest?cb=20130511180903";
             } else {
-                ImageURL = "https://rodrigoshariff.smugmug.com/Bird/Birder-Journey/" + arguments.getString("imageID") + "/0/L/" + arguments.getString("imageFileName");
+                //ImageURL = "https://rodrigoshariff.smugmug.com/Bird/Birder-Journey/" + arguments.getString("imageID") + "/0/L/" + arguments.getString("imageFileName");
+                ImageURL = "https://photos.smugmug.com/Bird/Birder-Journey/" + arguments.getString("imageID") + "/0/L/" + arguments.getString("imageFileName") + "-L.jpg";
             }
         }
 

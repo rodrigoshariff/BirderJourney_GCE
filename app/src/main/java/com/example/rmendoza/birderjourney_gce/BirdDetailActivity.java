@@ -109,7 +109,8 @@ public class BirdDetailActivity extends AppCompatActivity implements SaveDialogF
             if (intent.getStringExtra("imageID").equals("TBD")) {
                 ImageURL = null;
             } else {
-                ImageURL = "https://rodrigoshariff.smugmug.com/Bird/Birder-Journey/" + intent.getStringExtra("imageID") + "/0/L/" + intent.getStringExtra("imageFileName");
+                //ImageURL = "https://rodrigoshariff.smugmug.com/Bird/Birder-Journey/" + intent.getStringExtra("imageID") + "/0/L/" + intent.getStringExtra("imageFileName");
+                ImageURL = "https://photos.smugmug.com/Bird/Birder-Journey/" + intent.getStringExtra("imageID") + "/0/L/" + intent.getStringExtra("imageFileName") + "-L.jpg";
             }
 
         } else {
