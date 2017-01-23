@@ -4,6 +4,7 @@ package com.example.rmendoza.birderjourney_gce;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by rodrigoshariff on 4/21/2016.
@@ -12,7 +13,7 @@ public class Utilities {
 
     public static String getBeginTime(String period) {
         String beginTime = "";
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance(Locale.US);
         switch (period) {
             //as you go.
             case "today": {
